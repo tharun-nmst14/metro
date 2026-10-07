@@ -1,0 +1,19 @@
+# SBT
+target/
+project/target/
+project/project/
+.bloop/
+.metals/
+project/.bloop/
+project/metals.sbt
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

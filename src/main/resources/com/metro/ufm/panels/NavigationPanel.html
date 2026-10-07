@@ -1,0 +1,32 @@
+<html xmlns:wicket="http://wicket.apache.org">
+  <body>
+    <wicket:panel>
+      <div class="main-navigation" aria-label="Application navigation">
+        <ul class="top-navigation">
+          <li>Start</li>
+          <li>UFM Masterdata</li>
+          <li><a wicket:id="maintenanceLink" class="menu-link">Maintenance</a></li>
+          <li>Assortment</li>
+          <li>PreOrder</li>
+          <li class="active ordering-item dropdown">
+            <button type="button" class="menu-trigger" aria-expanded="false" aria-label="Show ordering menu">Ordering</button>
+            <ul class="ordering-submenu" aria-label="Ordering functions">
+              <li><a wicket:id="dsdOrderLink">DSD Order</a></li>
+              <li class="disabled">Store quantities</li>
+              <li class="disabled">Self service stock orders</li>
+              <li class="disabled">Supplier assignment</li>
+              <li class="disabled">Stock Order</li>
+              <li class="disabled">Stock Order Corr</li>
+              <li><a wicket:id="stockAssignmentLink">Stock Assignment</a></li>
+              <li class="disabled">Order Maintenance</li>
+              <li class="disabled">File Upload</li>
+            </ul>
+          </li>
+          <li>Parameter</li>
+          <li>Reports</li>
+          <li>Search</li>
+        </ul>
+      </div>
+    </wicket:panel>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Metro UFM Demo - Steering Parameter</title>
+  </head>
+  <body>
+    <header wicket:id="headerPanel"></header>
+    <nav wicket:id="navigationPanel"></nav>
+    <section wicket:id="userInfoPanel"></section>
+
+    <main class="steering-page" aria-label="Steering Parameter">
+      <nav class="parameter-tabs" aria-label="Maintenance functions">
+        <a class="active-tab" wicket:id="activeTab" href="#"></a>
+        <span wicket:id="tabPlaceholders">
+          <a href="#">Order Reports</a>
+          <a href="#">Purchase Area</a>
+          <a href="#">PAXD Supplier</a>
+          <a href="#">Sales Lines</a>
+          <a href="#">DCs</a>
+          <a href="#">VTO Supplier</a>
+          <a href="#">Row Selector</a>
+          <a href="#">Interfaces</a>
+          <a href="#">Delivery DC Supplier</a>
+          <a href="#">DSD Supplier Whitelist</a>
+        </span>
+      </nav>
+
+      <div wicket:id="toolbar" class="steering-toolbar" aria-label="Steering Parameter actions">
+        <a wicket:id="saveLink" href="#" aria-label="Save"></a>
+        <a wicket:id="refreshLink" href="#" aria-label="Refresh"></a>
+      </div>
+
+      <div wicket:id="status" class="steering-status" aria-live="polite"></div>
+
+      <section wicket:id="parameterPanel" class="parameter-panel">
+        <div class="parameter-columns">
+          <div class="parameter-column">
+            <label><input wicket:id="saturdayOrderDay" type="checkbox" /> Saturday is order day</label>
+            <label><input wicket:id="sundayOrderDay" type="checkbox" /> Sunday is order day</label>
+            <label><input wicket:id="ediForDsd" type="checkbox" /> EDI for DSD</label>
+            <label><input wicket:id="dispoDayHoliday99" type="checkbox" /> Dispo Day Holiday 99</label>
+          </div>
+
+          <div class="parameter-column">
+            <label><input wicket:id="saturdayDeliveryDay" type="checkbox" /> Saturday is delivery day</label>
+            <label><input wicket:id="sundayDeliveryDay" type="checkbox" /> Sunday is delivery day</label>
+            <label><input wicket:id="noDeliveryDayHoliday99" type="checkbox" /> No Delivery Day on Holiday 99</label>
+            <label><input wicket:id="displaySalesForecast" type="checkbox" /> Display Sales Forecast</label>
+          </div>
+
+          <div class="parameter-column parameter-right-column">
+            <label><input wicket:id="considerSaturdayOplShifting" type="checkbox" /> Consider Saturday for OPL Shifting</label>
+            <fieldset>
+              <legend>Order By COMS</legend>
+              <div wicket:id="orderByComs" class="radio-row">
+                <label><input wicket:id="orderByComs3" type="radio" /> 3</label>
+                <label><input wicket:id="orderByComs5" type="radio" /> 5</label>
+                <label><input wicket:id="orderByComs7" type="radio" /> 7</label>
+              </div>
+            </fieldset>
+            <label><input wicket:id="noDeliveryDayHoliday" type="checkbox" /> No Delivery Day on Holiday</label>
+          </div>
+        </div>
+
+        <div class="supplier-assignment-title">Automatic Supplier Assignment</div>
+        <div class="supplier-assignment-panel">
+          <label><input wicket:id="articleLevel" type="checkbox" /> Article level</label>
+          <label><input wicket:id="dcLevel" type="checkbox" /> DC level</label>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

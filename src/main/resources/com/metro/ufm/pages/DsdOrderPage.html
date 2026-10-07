@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org" lang="en">
+  <body>
+    <header wicket:id="headerPanel"></header>
+    <nav wicket:id="navigationPanel"></nav>
+    <section wicket:id="userInfoPanel"></section>
+
+    <main class="dsd-order-page" aria-label="DSD Order page">
+      <div class="order-toolbar">
+        <a wicket:id="openFilterLink" class="filter-trigger" href="#">Filter criteria</a>
+      </div>
+
+      <section wicket:id="resultArea" class="result-area" aria-label="DSD Order results">
+
+        <!-- Selected filter summary -->
+        <div wicket:id="filterSummary"
+             class="filter-summary"
+             aria-label="Selected filter summary">
+          <span>PUAR: <strong wicket:id="summaryPuar"></strong></span>
+          <span>SL: <strong wicket:id="summarySl"></strong></span>
+          <span>SID: <strong wicket:id="summarySid"></strong></span>
+          <span>Store Name: <strong wicket:id="summaryStoreName"></strong></span>
+          <span>Supplier No: <strong wicket:id="summarySupplierNumber"></strong></span>
+          <span>Supplier Name: <strong wicket:id="summarySupplierName"></strong></span>
+          <span>Delivery Day: <strong wicket:id="summaryDeliveryDay"></strong></span>
+          <span>Order: <strong wicket:id="summaryOrder"></strong></span>
+        </div>
+
+        <!-- Save confirmation / validation message -->
+        <div wicket:id="saveMessage"
+             class="save-message"
+             aria-live="polite"></div>
+
+        <div wicket:id="emptyState"
+             class="empty-panel"
+             aria-label="No DSD order results yet">
+        </div>
+
+        <!-- Result table -->
+        <div wicket:id="resultTableContainer">
+
+          <div class="result-content">
+
+            <!-- Result action toolbar -->
+            <aside wicket:id="resultToolbar"
+                   class="result-toolbar"
+                   aria-label="Result actions">
+
+              <button wicket:id="saveIcon"
+                      type="button"
+                      aria-label="Save">
+              </button>
+
+              <button wicket:id="refreshIcon"
+                      type="button"
+                      aria-label="Refresh">
+              </button>
+
+              <button wicket:id="sendIcon"
+                      type="button"
+                      aria-label="Send">
+              </button>
+
+              <button wicket:id="truckIcon"
+                      type="button"
+                      aria-label="Truck">
+              </button>
+
+              <button wicket:id="databaseIcon"
+                      type="button"
+                      aria-label="Database">
+              </button>
+
+              <button wicket:id="exportIcon"
+                      type="button"
+                      aria-label="Export">
+              </button>
+
+            </aside>
+
+            <div class="result-table-scroll">
+              <table class="result-table">
+
+                <thead>
+                  <tr>
+                    <th>S/G<br />(CNU)</th>
+                    <th>Art-<br />No</th>
+                    <th>Var-<br />No</th>
+                    <th>Bundle-<br />No</th>
+                    <th>Subsys<br />No.</th>
+                    <th>Desc.</th>
+                    <th>Sorttext</th>
+                    <th>Sizetext</th>
+                    <th>CBB</th>
+                    <th>MOQ</th>
+                    <th>Order.Qty</th>
+                    <th>Price</th>
+                    <th>MRP</th>
+                    <th>Promotion</th>
+                    <th>Stock</th>
+                  </tr>
+                </thead>
+
+                <tbody wicket:id="resultRowsContainer">
+                  <tr wicket:id="resultRows">
+                    <td wicket:id="resultSgCnu"></td>
+                    <td wicket:id="resultArticleNumber"></td>
+                    <td wicket:id="resultVariantNumber"></td>
+                    <td wicket:id="resultBundleNumber"></td>
+                    <td wicket:id="resultSubsystemNumber"></td>
+                    <td wicket:id="resultDescription"></td>
+                    <td wicket:id="resultSortText"></td>
+                    <td wicket:id="resultSizeText"></td>
+                    <td wicket:id="resultCbb"></td>
+                    <td wicket:id="resultMoq"></td>
+
+                    <td class="result-input">
+                      <input wicket:id="resultOrderQuantity"
+                             type="text" />
+                    </td>
+
+                    <td class="result-input">
+                      <input wicket:id="resultPrice"
+                             type="text" />
+                    </td>
+
+                    <td wicket:id="resultMrp"></td>
+                    <td wicket:id="resultPromotion"></td>
+                    <td wicket:id="resultStock"></td>
+                  </tr>
+                </tbody>
+
+              </table>
+            </div>
+
+          </div>
+
+          <!-- Pagination -->
+          <div wicket:id="pagination"
+               class="result-pagination"
+               aria-label="Result pagination">
+
+            <a wicket:id="firstPageLink"
+               class="pagination-button first"
+               href="#"
+               aria-label="First page">
+            </a>
+
+            <a wicket:id="previousPageLink"
+               class="pagination-button previous"
+               href="#"
+               aria-label="Previous page">
+            </a>
+
+            <span wicket:id="pageNumbers"
+                  class="page-numbers">
+              <a wicket:id="pageLink" href="#">
+                <span wicket:id="pageNumber"></span>
+              </a>
+            </span>
+
+            <a wicket:id="nextPageLink"
+               class="pagination-button next"
+               href="#"
+               aria-label="Next page">
+            </a>
+
+            <a wicket:id="lastPageLink"
+               class="pagination-button last"
+               href="#"
+               aria-label="Last page">
+            </a>
+
+            <span wicket:id="resultCount"
+                  class="result-count">
+            </span>
+
+            <button wicket:id="gridIcon"
+                    class="grid-icon"
+                    type="button"
+                    aria-label="Grid view">
+            </button>
+
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- Filter Modal -->
+    <section wicket:id="filterModal"
+             class="filter-modal"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="filterModalTitle">
+
+      <div class="filter-modal-window">
+
+        <div class="filter-modal-header">
+          <strong id="filterModalTitle">Filter criteria:</strong>
+
+          <a wicket:id="closeFilterLink"
+             class="modal-close"
+             href="#"
+             aria-label="Close filter criteria">
+            X
+          </a>
+        </div>
+
+        <div class="filter-group">
+
+          <div class="filter-row">
+            <strong>PUAR</strong>
+            <select aria-label="PUAR">
+              <option>151</option>
+            </select>
+          </div>
+
+          <div class="filter-row">
+            <strong>SL</strong>
+            <select aria-label="SL">
+              <option>11</option>
+            </select>
+          </div>
+
+          <div class="filter-row">
+            <strong>SID</strong>
+            <select aria-label="SID">
+              <option>10 - MUELHEIM</option>
+            </select>
+          </div>
+
+          <div class="filter-row">
+            <strong>Delivery Day</strong>
+
+            <div class="field-with-actions">
+              <input wicket:id="deliveryDayPicker"
+                class="delivery-day-picker"
+                     aria-label="Delivery Day"
+                type="date" />
+            </div>
+          </div>
+
+        </div>
+
+        <div class="filter-group">
+
+          <div class="filter-row">
+            <strong>Supplier No</strong>
+
+            <div class="field-with-actions">
+              <input wicket:id="supplierNumberField"
+                     aria-label="Supplier No"
+                     type="text" />
+
+              <button class="lookup-icon"
+                      type="button"
+                      aria-label="Look up supplier number">
+              </button>
+            </div>
+          </div>
+
+          <div class="filter-row">
+            <strong>Supplier Name</strong>
+
+            <input wicket:id="supplierNameField"
+                   aria-label="Supplier Name"
+                   class="supplier-name-input"
+                   type="text" />
+          </div>
+
+          <div wicket:id="supplierGroup"
+               class="supplier-table"
+               aria-label="Supplier selection">
+
+            <div class="supplier-table-header">
+              <span>Supplier No</span>
+              <span>Supplier</span>
+            </div>
+
+            <div wicket:id="supplierRowsContainer">
+
+              <div wicket:id="supplierRows">
+
+                <label class="supplier-row">
+                  <input wicket:id="supplierRadio"
+                         type="radio" />
+
+                  <span wicket:id="supplierNumber"></span>
+                  <span wicket:id="supplierName"></span>
+                </label>
+
+              </div>
+
+            </div>
+
+            <div class="pagination"
+                 aria-label="Supplier pagination">
+
+              <button type="button"
+                      aria-label="First supplier page">
+                |&lt;
+              </button>
+
+              <button type="button"
+                      aria-label="Previous supplier page">
+                &lt;
+              </button>
+
+              <span>1</span>
+              <span>2</span>
+
+              <button type="button"
+                      aria-label="Next supplier page">
+                &gt;
+              </button>
+
+              <button type="button"
+                      aria-label="Last supplier page">
+                &gt;|
+              </button>
+
+              <span class="pagination-total">5</span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="filter-group order-list-group">
+
+          <div class="filter-row">
+            <strong>Order List</strong>
+
+            <div class="field-with-actions">
+
+              <select wicket:id="orderListField"
+                      aria-label="Order List">
+              </select>
+
+              <button class="lookup-icon"
+                      type="button"
+                      aria-label="Look up order list">
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+
+        <div class="filter-group">
+
+          <div class="filter-row">
+            <strong>Order No</strong>
+            <input wicket:id="orderNumberField"
+                   aria-label="Order No"
+                   type="text" />
+          </div>
+
+          <div class="filter-row">
+            <strong>Art No.</strong>
+            <input wicket:id="articleNumberField"
+                   aria-label="Art No."
+                   type="text" />
+          </div>
+
+          <div class="filter-row">
+            <strong>Subsys No.</strong>
+            <input wicket:id="subsystemNumberField"
+                   aria-label="Subsys No."
+                   type="text" />
+          </div>
+
+          <div class="filter-row">
+            <strong>Description</strong>
+            <input wicket:id="descriptionField"
+                   aria-label="Description"
+                   type="text" />
+          </div>
+
+        </div>
+
+        <div class="filter-actions">
+
+          <a wicket:id="applyFilterLink"
+             class="apply-filter"
+             href="#"
+             aria-label="Apply filter">
+            &#10003;
+          </a>
+
+          <a wicket:id="cancelFilterLink"
+             class="cancel-filter"
+             href="#"
+             aria-label="Cancel filter">
+            &#10005;
+          </a>
+
+        </div>
+
+      </div>
+    </section>
+
+  </body>
+</html>

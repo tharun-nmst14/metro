@@ -1,0 +1,289 @@
+-- EPIC-08 Stage 3 - Reviewable Oracle DDL
+--
+-- This script is generated from docs/06-database-design.md.
+-- It is a review artifact only. Do not execute it yet.
+--
+-- Classification:
+--   CONFIRMED: supported by requirements or current code.
+--   PROPOSED: documented Stage 2 relational design choice.
+--   TBD: unresolved and intentionally not converted into a new rule here.
+--
+-- The existing Page -> Service -> Repository architecture and mock
+-- repositories remain unchanged. No JDBC, PL/SQL, or Oracle connection is
+-- required to review this file.
+--
+-- Important unresolved items:
+--   * Identity versus sequence generation is TBD. No executable generation
+--     strategy is selected below.
+--   * VARCHAR2 lengths, date/time semantics, NUMBER precision/scale, schema
+--     owner, optionality, natural keys, delete behavior, effective dating,
+--     calculations, audit behavior, and transaction behavior remain subject
+--     to the documented Stage 2 TBD decisions.
+--   * Candidate indexes are marked as such and require query/volume approval.
+
+-- ---------------------------------------------------------------------------
+-- 1. Independent master and reference entities
+-- ---------------------------------------------------------------------------
+
+CREATE TABLE APP_USER (
+    APP_USER_ID NUMBER(19) NOT NULL,
+    USERNAME VARCHAR2(255) NOT NULL,
+    PASSWORD_HASH VARCHAR2(512) NOT NULL,
+    DISPLAY_NAME VARCHAR2(255),
+    STATUS VARCHAR2(30),
+    CREATED_AT TIMESTAMP,
+    UPDATED_AT TIMESTAMP,
+    CONSTRAINT PK_APP_USER PRIMARY KEY (APP_USER_ID),
+    CONSTRAINT UQ_APP_USER_USERNAME UNIQUE (USERNAME)
+);
+
+CREATE TABLE STORE (
+    STORE_ID NUMBER(19) NOT NULL,
+    STORE_NO VARCHAR2(50) NOT NULL,
+    STORE_NAME VARCHAR2(255),
+    STATUS VARCHAR2(30),
+    CONSTRAINT PK_STORE PRIMARY KEY (STORE_ID),
+    CONSTRAINT UQ_STORE_STORE_NO UNIQUE (STORE_NO)
+);
+
+CREATE TABLE SUPPLIER (
+    SUPPLIER_ID NUMBER(19) NOT NULL,
+    SUPPLIER_NO VARCHAR2(50) NOT NULL,
+    SUPPLIER_NAME VARCHAR2(255) NOT NULL,
+    STATUS VARCHAR2(30),
+    CONSTRAINT PK_SUPPLIER PRIMARY KEY (SUPPLIER_ID),
+    CONSTRAINT UQ_SUPPLIER_SUPPLIER_NO UNIQUE (SUPPLIER_NO)
+);
+
+CREATE TABLE DISTRIBUTION_CENTER (
+    DISTRIBUTION_CENTER_ID NUMBER(19) NOT NULL,
+    DC_NO VARCHAR2(50) NOT NULL,
+    DC_NAME VARCHAR2(255),
+    STATUS VARCHAR2(30),
+    CONSTRAINT PK_DISTRIBUTION_CENTER PRIMARY KEY (DISTRIBUTION_CENTER_ID),
+    CONSTRAINT UQ_DISTRIBUTION_CENTER_DC_NO UNIQUE (DC_NO)
+);
+
+CREATE TABLE MERCH_GROUP (
+    MERCH_GROUP_ID NUMBER(19) NOT NULL,
+    MERCH_GROUP_CODE VARCHAR2(100) NOT NULL,
+    MERCH_GROUP_NAME VARCHAR2(255),
+    CONSTRAINT PK_MERCH_GROUP PRIMARY KEY (MERCH_GROUP_ID),
+    CONSTRAINT UQ_MERCH_GROUP_CODE UNIQUE (MERCH_GROUP_CODE)
+);
+
+-- ---------------------------------------------------------------------------
+-- 2. Article and order entities
+-- ---------------------------------------------------------------------------
+
+CREATE TABLE ARTICLE (
+    ARTICLE_ID NUMBER(19) NOT NULL,
+    ARTICLE_NO VARCHAR2(100) NOT NULL,
+    SUBSYSTEM_NO VARCHAR2(50),
+    VARIANT_NO VARCHAR2(50),
+    BUNDLE_NO VARCHAR2(50),
+    SG_CNU VARCHAR2(100),
+    DESCRIPTION VARCHAR2(1000),
+    SORT_TEXT VARCHAR2(1000),
+    SIZE_TEXT VARCHAR2(255),
+    MERCH_GROUP_ID NUMBER(19),
+    CONSTRAINT PK_ARTICLE PRIMARY KEY (ARTICLE_ID),
+    CONSTRAINT FK_ARTICLE_MERCH_GROUP FOREIGN KEY (MERCH_GROUP_ID)
+        REFERENCES MERCH_GROUP (MERCH_GROUP_ID)
+);
+
+CREATE TABLE ORDER_HEADER (
+    ORDER_HEADER_ID NUMBER(19) NOT NULL,
+    ORDER_NO VARCHAR2(100) NOT NULL,
+    ORDER_LIST_CODE VARCHAR2(100),
+    SUPPLIER_ID NUMBER(19),
+    STORE_ID NUMBER(19),
+    STATUS VARCHAR2(30),
+    CONSTRAINT PK_ORDER_HEADER PRIMARY KEY (ORDER_HEADER_ID),
+    CONSTRAINT FK_ORDER_HEADER_SUPPLIER FOREIGN KEY (SUPPLIER_ID)
+        REFERENCES SUPPLIER (SUPPLIER_ID),
+    CONSTRAINT FK_ORDER_HEADER_STORE FOREIGN KEY (STORE_ID)
+        REFERENCES STORE (STORE_ID)
+);
+
+CREATE TABLE ORDER_LINE (
+    ORDER_LINE_ID NUMBER(19) NOT NULL,
+    ORDER_HEADER_ID NUMBER(19) NOT NULL,
+    ARTICLE_ID NUMBER(19),
+    SUBSYSTEM_NO VARCHAR2(50),
+    VARIANT_NO VARCHAR2(50),
+    BUNDLE_NO VARCHAR2(50),
+    ORDER_QUANTITY NUMBER,
+    PRICE NUMBER,
+    MRP NUMBER,
+    PROMOTION VARCHAR2(255),
+    CONSTRAINT PK_ORDER_LINE PRIMARY KEY (ORDER_LINE_ID),
+    CONSTRAINT FK_ORDER_LINE_HEADER FOREIGN KEY (ORDER_HEADER_ID)
+        REFERENCES ORDER_HEADER (ORDER_HEADER_ID),
+    CONSTRAINT FK_ORDER_LINE_ARTICLE FOREIGN KEY (ARTICLE_ID)
+        REFERENCES ARTICLE (ARTICLE_ID)
+);
+
+-- ---------------------------------------------------------------------------
+-- 3. Assignment and stock entities
+-- ---------------------------------------------------------------------------
+
+CREATE TABLE SUPPLIER_ASSIGNMENT (
+    SUPPLIER_ASSIGNMENT_ID NUMBER(19) NOT NULL,
+    SUPPLIER_ID NUMBER(19) NOT NULL,
+    ARTICLE_ID NUMBER(19),
+    STORE_ID NUMBER(19),
+    VALID_FROM DATE,
+    VALID_TO DATE,
+    CONSTRAINT PK_SUPPLIER_ASSIGNMENT PRIMARY KEY (SUPPLIER_ASSIGNMENT_ID),
+    CONSTRAINT FK_SUPPLIER_ASSIGNMENT_SUPPLIER FOREIGN KEY (SUPPLIER_ID)
+        REFERENCES SUPPLIER (SUPPLIER_ID),
+    CONSTRAINT FK_SUPPLIER_ASSIGNMENT_ARTICLE FOREIGN KEY (ARTICLE_ID)
+        REFERENCES ARTICLE (ARTICLE_ID),
+    CONSTRAINT FK_SUPPLIER_ASSIGNMENT_STORE FOREIGN KEY (STORE_ID)
+        REFERENCES STORE (STORE_ID)
+);
+
+CREATE TABLE STORE_STOCK (
+    STORE_STOCK_ID NUMBER(19) NOT NULL,
+    STORE_ID NUMBER(19) NOT NULL,
+    ARTICLE_ID NUMBER(19) NOT NULL,
+    QUANTITY NUMBER,
+    AS_OF_AT TIMESTAMP,
+    CONSTRAINT PK_STORE_STOCK PRIMARY KEY (STORE_STOCK_ID),
+    CONSTRAINT FK_STORE_STOCK_STORE FOREIGN KEY (STORE_ID)
+        REFERENCES STORE (STORE_ID),
+    CONSTRAINT FK_STORE_STOCK_ARTICLE FOREIGN KEY (ARTICLE_ID)
+        REFERENCES ARTICLE (ARTICLE_ID)
+);
+
+CREATE TABLE DC_STOCK (
+    DC_STOCK_ID NUMBER(19) NOT NULL,
+    DISTRIBUTION_CENTER_ID NUMBER(19) NOT NULL,
+    ARTICLE_ID NUMBER(19) NOT NULL,
+    QUANTITY NUMBER,
+    AS_OF_AT TIMESTAMP,
+    CONSTRAINT PK_DC_STOCK PRIMARY KEY (DC_STOCK_ID),
+    CONSTRAINT FK_DC_STOCK_DC FOREIGN KEY (DISTRIBUTION_CENTER_ID)
+        REFERENCES DISTRIBUTION_CENTER (DISTRIBUTION_CENTER_ID),
+    CONSTRAINT FK_DC_STOCK_ARTICLE FOREIGN KEY (ARTICLE_ID)
+        REFERENCES ARTICLE (ARTICLE_ID)
+);
+
+CREATE TABLE STOCK_ASSIGNMENT (
+    STOCK_ASSIGNMENT_ID NUMBER(19) NOT NULL,
+    ARTICLE_ID NUMBER(19),
+    DISTRIBUTION_CENTER_ID NUMBER(19),
+    STORE_ID NUMBER(19),
+    ASSIGNMENT_DAY DATE,
+    SALES_FORECAST NUMBER,
+    STORE_QUANTITY NUMBER,
+    ASSIGNED_STOCK_QUANTITY NUMBER,
+    QUANTITY_GAP NUMBER,
+    REMAINING_QUANTITY NUMBER,
+    UFM_STOCK NUMBER,
+    PROMOTION VARCHAR2(255),
+    RECALC VARCHAR2(30),
+    KEY_DISTRIBUTION VARCHAR2(255),
+    IBC VARCHAR2(255),
+    ARTICLE_EXCHANGE VARCHAR2(255),
+    CONSTRAINT PK_STOCK_ASSIGNMENT PRIMARY KEY (STOCK_ASSIGNMENT_ID),
+    CONSTRAINT FK_STOCK_ASSIGNMENT_ARTICLE FOREIGN KEY (ARTICLE_ID)
+        REFERENCES ARTICLE (ARTICLE_ID),
+    CONSTRAINT FK_STOCK_ASSIGNMENT_DC FOREIGN KEY (DISTRIBUTION_CENTER_ID)
+        REFERENCES DISTRIBUTION_CENTER (DISTRIBUTION_CENTER_ID),
+    CONSTRAINT FK_STOCK_ASSIGNMENT_STORE FOREIGN KEY (STORE_ID)
+        REFERENCES STORE (STORE_ID)
+);
+
+-- ---------------------------------------------------------------------------
+-- 4. Parameter and audit entities
+-- ---------------------------------------------------------------------------
+
+CREATE TABLE STEERING_PARAMETER (
+    STEERING_PARAMETER_ID NUMBER(19) NOT NULL,
+    PARAMETER_CODE VARCHAR2(100) NOT NULL,
+    PARAMETER_VALUE VARCHAR2(4000),
+    STATUS VARCHAR2(30),
+    VALID_FROM DATE,
+    VALID_TO DATE,
+    CONSTRAINT PK_STEERING_PARAMETER PRIMARY KEY (STEERING_PARAMETER_ID),
+    CONSTRAINT UQ_STEERING_PARAMETER_CODE UNIQUE (PARAMETER_CODE)
+);
+
+CREATE TABLE AUDIT_LOG (
+    AUDIT_LOG_ID NUMBER(19) NOT NULL,
+    APP_USER_ID NUMBER(19),
+    ENTITY_NAME VARCHAR2(128) NOT NULL,
+    ENTITY_ID VARCHAR2(100) NOT NULL,
+    ACTION_CODE VARCHAR2(50) NOT NULL,
+    OCCURRED_AT TIMESTAMP NOT NULL,
+    DETAILS CLOB,
+    CONSTRAINT PK_AUDIT_LOG PRIMARY KEY (AUDIT_LOG_ID),
+    CONSTRAINT FK_AUDIT_LOG_APP_USER FOREIGN KEY (APP_USER_ID)
+        REFERENCES APP_USER (APP_USER_ID)
+);
+
+-- ---------------------------------------------------------------------------
+-- 5. Candidate indexes
+-- ---------------------------------------------------------------------------
+-- These indexes are documented candidates, not confirmed physical design.
+-- Remove or revise them if query patterns and data volumes do not approve them.
+
+CREATE INDEX IX_ARTICLE_ARTICLE_NO ON ARTICLE (ARTICLE_NO);
+CREATE INDEX IX_ARTICLE_SG_CNU ON ARTICLE (SG_CNU);
+CREATE INDEX IX_ORDER_HEADER_ORDER_NO ON ORDER_HEADER (ORDER_NO);
+CREATE INDEX IX_ORDER_HEADER_ORDER_LIST ON ORDER_HEADER (ORDER_LIST_CODE);
+CREATE INDEX IX_ORDER_HEADER_SUPPLIER ON ORDER_HEADER (SUPPLIER_ID);
+CREATE INDEX IX_ORDER_HEADER_STORE ON ORDER_HEADER (STORE_ID);
+CREATE INDEX IX_ORDER_LINE_HEADER ON ORDER_LINE (ORDER_HEADER_ID);
+CREATE INDEX IX_ORDER_LINE_ARTICLE ON ORDER_LINE (ARTICLE_ID);
+CREATE INDEX IX_SUPPLIER_ASSIGNMENT_ARTICLE ON SUPPLIER_ASSIGNMENT (ARTICLE_ID);
+CREATE INDEX IX_SUPPLIER_ASSIGNMENT_STORE ON SUPPLIER_ASSIGNMENT (STORE_ID);
+CREATE INDEX IX_STORE_STOCK_ARTICLE ON STORE_STOCK (ARTICLE_ID);
+CREATE INDEX IX_DC_STOCK_ARTICLE ON DC_STOCK (ARTICLE_ID);
+CREATE INDEX IX_STOCK_ASSIGNMENT_DAY ON STOCK_ASSIGNMENT (ASSIGNMENT_DAY);
+CREATE INDEX IX_STOCK_ASSIGNMENT_ARTICLE ON STOCK_ASSIGNMENT (ARTICLE_ID);
+CREATE INDEX IX_STOCK_ASSIGNMENT_DC ON STOCK_ASSIGNMENT (DISTRIBUTION_CENTER_ID);
+CREATE INDEX IX_STOCK_ASSIGNMENT_STORE ON STOCK_ASSIGNMENT (STORE_ID);
+
+-- ---------------------------------------------------------------------------
+-- 6. Identity/sequence generation review placeholders
+-- ---------------------------------------------------------------------------
+-- The Stage 2 design proposes numeric surrogate keys generated by identity or
+-- sequence, but the exact strategy, names, and policy are TBD. No executable
+-- identity or sequence definition is selected in this review script.
+--
+-- Examples below are intentionally non-executable placeholders only:
+-- ALTER TABLE <TABLE_NAME> MODIFY (<TABLE_ID> GENERATED BY DEFAULT AS IDENTITY);
+-- CREATE SEQUENCE <TABLE_ID>_SEQ;
+--
+-- Do not replace the placeholders until the identity-versus-sequence decision
+-- and sequence naming/ownership policy are approved.
+
+-- ---------------------------------------------------------------------------
+-- 7. Review comments
+-- ---------------------------------------------------------------------------
+
+COMMENT ON TABLE APP_USER IS 'PROPOSED Stage 2 entity; configured mock authentication remains active.';
+COMMENT ON TABLE STORE IS 'PROPOSED Stage 2 entity; store attributes and DC relationship remain TBD.';
+COMMENT ON TABLE SUPPLIER IS 'PROPOSED Stage 2 entity mapped from the Supplier model.';
+COMMENT ON TABLE DISTRIBUTION_CENTER IS 'PROPOSED Stage 2 entity; DC code/name semantics remain TBD.';
+COMMENT ON TABLE MERCH_GROUP IS 'PROPOSED Stage 2 entity; code/name semantics remain TBD.';
+COMMENT ON TABLE ARTICLE IS 'PROPOSED Stage 2 entity; article identity and field ownership remain TBD.';
+COMMENT ON TABLE ORDER_HEADER IS 'PROPOSED Stage 2 entity; order lifecycle and order-context uniqueness remain TBD.';
+COMMENT ON TABLE ORDER_LINE IS 'PROPOSED Stage 2 entity mapped from DSD order/article data.';
+COMMENT ON TABLE SUPPLIER_ASSIGNMENT IS 'PROPOSED Stage 2 entity; relationship and effective dating remain TBD.';
+COMMENT ON TABLE STORE_STOCK IS 'PROPOSED Stage 2 entity; quantity units and temporal semantics remain TBD.';
+COMMENT ON TABLE DC_STOCK IS 'PROPOSED Stage 2 entity; quantity units and temporal semantics remain TBD.';
+COMMENT ON TABLE STOCK_ASSIGNMENT IS 'PROPOSED Stage 2 entity mapped from Stock Assignment results; calculations remain TBD.';
+COMMENT ON TABLE STEERING_PARAMETER IS 'PROPOSED Stage 2 entity; EPIC-07 remains postponed.';
+COMMENT ON TABLE AUDIT_LOG IS 'PROPOSED Stage 2 entity; audit scope, retention, and immutability remain TBD.';
+
+COMMENT ON COLUMN APP_USER.PASSWORD_HASH IS 'PROPOSED; hashing contract is TBD.';
+COMMENT ON COLUMN ARTICLE.ARTICLE_NO IS 'PROPOSED; uniqueness scope is not confirmed.';
+COMMENT ON COLUMN ORDER_LINE.ORDER_QUANTITY IS 'PROPOSED/TBD; precision, scale, and unit are not confirmed.';
+COMMENT ON COLUMN STOCK_ASSIGNMENT.SALES_FORECAST IS 'PROPOSED/TBD; calculation ownership, precision, scale, and unit are not confirmed.';
+COMMENT ON COLUMN AUDIT_LOG.DETAILS IS 'TBD; detail format and retention behavior are not defined.';
+
+-- End of review-only Stage 3 DDL.

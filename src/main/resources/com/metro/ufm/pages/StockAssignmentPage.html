@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org" lang="en">
+  <body>
+    <header wicket:id="headerPanel"></header>
+    <nav wicket:id="navigationPanel"></nav>
+    <section wicket:id="userInfoPanel"></section>
+
+    <main class="stock-assignment-page" aria-label="Stock Assignment page">
+      <section class="stock-assignment-main" aria-label="Stock assignment content">
+        <div wicket:id="criteriaContainer" class="stock-assignment-criteria" aria-label="Stock assignment criteria">
+          <div class="stock-assignment-criteria-row stock-assignment-criteria-row-primary">
+            <div class="stock-assignment-criteria-cell stock-assignment-criteria-cell-assortment"><strong>Assortment:</strong><span wicket:id="assortment"></span></div>
+            <div class="stock-assignment-criteria-cell"><strong>PUAR:</strong><span wicket:id="puar"></span></div>
+            <div class="stock-assignment-criteria-cell"><strong>DC</strong><span wicket:id="dc"></span></div>
+          </div>
+          <div class="stock-assignment-criteria-row stock-assignment-criteria-row-secondary">
+            <div class="stock-assignment-criteria-cell"><strong>Assignment<br />Day:</strong><span wicket:id="assignmentDay"></span></div>
+            <div class="stock-assignment-criteria-cell"><strong>Del.Day<br />SID:</strong><span wicket:id="deliveryDaySid"></span></div>
+            <div class="stock-assignment-criteria-cell"><strong>Cut-off<br />time:</strong><span wicket:id="cutoffTime"></span></div>
+            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>Art.with<br />quant.:</strong><input wicket:id="articlesWithQuantity" type="checkbox" aria-label="Articles with quantity" /></label>
+            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>Stores with<br />quant.:</strong><input wicket:id="storesWithQuantity" type="checkbox" aria-label="Stores with quantity" /></label>
+            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>AutoExpAllowed</strong><input wicket:id="autoExportAllowed" type="checkbox" aria-label="Auto export allowed" /></label>
+            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>Push<br />Through</strong><input wicket:id="pushThrough" type="checkbox" aria-label="Push through" /></label>
+            <div class="stock-assignment-criteria-cell"><strong>Qty.Gap:</strong><span wicket:id="quantityGap"></span></div>
+            <div class="stock-assignment-criteria-cell"><strong>Exported<br />DC's:</strong><span wicket:id="exportedDcs"></span></div>
+            <div class="stock-assignment-criteria-cell"><strong>UnExported<br />DC's:</strong><span wicket:id="unexportedDcs"></span></div>
+          </div>
+        </div>
+
+        <div class="stock-assignment-filter-row">
+          <a wicket:id="openFilterLink" class="stock-assignment-filter-trigger" href="#">Filter criteria</a>
+        </div>
+
+        <div wicket:id="resultArea" class="stock-assignment-result-area" aria-label="Stock assignment result area">
+          <div wicket:id="emptyState" class="stock-assignment-null" aria-hidden="true"></div>
+          <div wicket:id="resultTableContainer" class="stock-assignment-result-table-container">
+            <div class="stock-assignment-result-content">
+              <aside wicket:id="resultToolbar" class="stock-assignment-result-toolbar" aria-label="Result actions">
+                <button wicket:id="saveIcon" type="button" aria-label="Save"></button>
+                <button wicket:id="refreshIcon" type="button" aria-label="Refresh"></button>
+                <button wicket:id="sendIcon" type="button" aria-label="Send"></button>
+                <button wicket:id="truckIcon" type="button" aria-label="Truck"></button>
+                <button wicket:id="databaseIcon" type="button" aria-label="Database"></button>
+                <button wicket:id="exportIcon" type="button" aria-label="Export"></button>
+              </aside>
+              <div class="stock-assignment-result-tables">
+                <div class="stock-assignment-result-table-scroll">
+                  <table class="stock-assignment-result-table">
+                    <thead>
+                      <tr>
+                        <th>S/G<br />(CNU)</th><th>Merch<br />Group</th><th>Art.<br />No.</th><th>Var</th><th>Bdle</th><th>Subsys</th><th>Description</th><th>Sorttext</th><th>Sizetext</th><th>CBB</th><th>BC</th><th>Sales<br />Forecast</th><th>Store Qty</th><th>Ass. Stock Qty</th><th>Recalc</th><th>Key Dist.</th><th>Qty Gap</th><th>Rem. Qty</th><th>UFM Stock</th><th>Promo</th><th>IBC</th><th>Article<br />Exchange</th>
+                      </tr>
+                    </thead>
+                    <tbody wicket:id="resultRowsContainer">
+                      <tr wicket:id="resultRows">
+                        <td wicket:id="resultSgCnu"></td><td wicket:id="resultMerchGroup"></td><td wicket:id="resultArticleNumber"></td><td wicket:id="resultVariant"></td><td wicket:id="resultBundle"></td><td wicket:id="resultSubsystemNumber"></td><td wicket:id="resultDescription"></td><td wicket:id="resultSortText"></td><td wicket:id="resultSizeText"></td><td wicket:id="resultCbb"></td><td wicket:id="resultBc"></td><td wicket:id="resultSalesForecast"></td><td wicket:id="resultStoreQuantity"></td><td wicket:id="resultAssignedStockQuantity"></td><td wicket:id="resultRecalc"></td><td wicket:id="resultKeyDistribution"></td><td wicket:id="resultQuantityGap"></td><td wicket:id="resultRemainingQuantity"></td><td wicket:id="resultUfmStock"></td><td wicket:id="resultPromotion"></td><td wicket:id="resultIbc"></td><td wicket:id="resultArticleExchange"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="stock-assignment-dc-detail-scroll">
+                  <table class="stock-assignment-dc-detail-table">
+                    <thead><tr><th>DC-no.</th><th>DC</th><th>BC</th><th>Order factor</th><th>Sales Forecast</th><th>Store Qty</th><th>Ass. Stock Qty</th><th>Qty Gap</th><th>Rem. Stock</th><th>UFM Stock</th><th>&Oslash; NNBP</th></tr></thead>
+                    <tbody wicket:id="dcDetailRowsContainer">
+                      <tr wicket:id="dcDetailRows"><td wicket:id="detailDcNumber"></td><td wicket:id="detailDc"></td><td wicket:id="detailBc"></td><td wicket:id="detailOrderFactor"></td><td wicket:id="detailSalesForecast"></td><td wicket:id="detailStoreQuantity"></td><td wicket:id="detailAssignedStockQuantity"></td><td wicket:id="detailQuantityGap"></td><td wicket:id="detailRemainingStock"></td><td wicket:id="detailUfmStock"></td><td wicket:id="detailAverageNnbp"></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div wicket:id="pagination" class="stock-assignment-pagination" aria-label="Result pagination">
+              <a wicket:id="firstPageLink" class="stock-assignment-pagination-button first" href="#" aria-label="First page"></a>
+              <a wicket:id="previousPageLink" class="stock-assignment-pagination-button previous" href="#" aria-label="Previous page"></a>
+              <span wicket:id="pageNumbers" class="stock-assignment-page-numbers"><a wicket:id="pageLink" href="#"><span wicket:id="pageNumber"></span></a></span>
+              <a wicket:id="nextPageLink" class="stock-assignment-pagination-button next" href="#" aria-label="Next page"></a>
+              <a wicket:id="lastPageLink" class="stock-assignment-pagination-button last" href="#" aria-label="Last page"></a>
+              <span wicket:id="resultCount" class="stock-assignment-result-count"></span>
+              <button wicket:id="gridIcon" class="stock-assignment-grid-icon" type="button" aria-label="Grid view"></button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section wicket:id="filterModal" class="stock-assignment-filter-modal" role="dialog" aria-modal="true" aria-labelledby="stockAssignmentFilterTitle">
+      <div class="stock-assignment-filter-window">
+        <div class="stock-assignment-filter-header">
+          <strong id="stockAssignmentFilterTitle">Filter criteria:</strong>
+          <a wicket:id="closeFilterLink" class="stock-assignment-modal-close" href="#" aria-label="Close filter criteria">X</a>
+        </div>
+
+        <div class="stock-assignment-filter-group">
+          <div class="stock-assignment-filter-row"><strong>Assortment:</strong><select wicket:id="assortmentField" aria-label="Assortment"></select></div>
+          <div class="stock-assignment-filter-row"><strong>DC No:</strong><select wicket:id="dcField" aria-label="DC No"></select></div>
+        </div>
+
+        <div class="stock-assignment-filter-group">
+          <div class="stock-assignment-filter-row"><strong>Assignment Day:</strong><div class="stock-assignment-field-actions"><input wicket:id="assignmentDayField" aria-label="Assignment Day" type="date" /></div></div>
+          <div class="stock-assignment-filter-row"><strong>Del.Day SID:</strong><select wicket:id="deliveryDaySidField" aria-label="Del.Day SID"></select></div>
+          <div class="stock-assignment-filter-row"><strong>Cut-off time:</strong><select wicket:id="cutoffTimeField" aria-label="Cut-off time"></select></div>
+          <div class="stock-assignment-filter-row"><strong>Art.with quant.:</strong><input wicket:id="articlesWithQuantityField" aria-label="Articles with quantity" type="checkbox" /></div>
+          <div class="stock-assignment-filter-row"><strong>Stores with quant.:</strong><input wicket:id="storesWithQuantityField" aria-label="Stores with quantity" type="checkbox" /></div>
+          <div class="stock-assignment-filter-row"><strong>Qty.Gap:</strong><select wicket:id="quantityGapField" aria-label="Quantity gap"></select></div>
+        </div>
+
+        <div class="stock-assignment-filter-group">
+          <div class="stock-assignment-filter-row"><strong>S/G No:</strong><input wicket:id="sgNumberField" aria-label="S/G No" type="text" /></div>
+          <div class="stock-assignment-filter-row"><strong>Article No:</strong><input wicket:id="articleNumberField" aria-label="Article No" type="text" /></div>
+          <div class="stock-assignment-filter-row"><strong>Subsys No:</strong><input wicket:id="subsystemNumberField" aria-label="Subsys No" type="text" /></div>
+          <div class="stock-assignment-filter-row"><strong>Merch Group:</strong><input wicket:id="merchGroupField" aria-label="Merch Group" type="text" /></div>
+          <div class="stock-assignment-filter-row"><strong>Article Description:</strong><input wicket:id="articleDescriptionField" aria-label="Article Description" type="text" /></div>
+          <div class="stock-assignment-filter-row"><strong>Rem. Stock:</strong><select wicket:id="remainingStockField" aria-label="Remaining stock"></select></div>
+        </div>
+
+        <div class="stock-assignment-filter-actions">
+          <a wicket:id="applyFilterLink" class="stock-assignment-apply-filter" href="#" aria-label="Apply filter">&#10003;</a>
+          <a wicket:id="cancelFilterLink" class="stock-assignment-cancel-filter" href="#" aria-label="Cancel filter">&#10005;</a>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org" lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>METRO Ultra Fresh Management - Log on</title>
+
+</head> 
+
+
+<body class="login-page">
+
+    <!-- =========================================================
+         TOP HEADER
+         ========================================================= -->
+    <header class="login-header">
+
+        <div class="header-brand">
+            <div class="metro-logo">METRO</div>
+
+            <div class="header-divider"></div>
+
+            <div class="application-name">
+                Ultra Fresh Management
+            </div>
+        </div>
+
+        <div class="header-tagline">
+            <span>Better Food</span>
+            <span class="tagline-divider">|</span>
+            <span>A Brighter Tomorrow</span>
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         MAIN LOGIN CONTENT
+         ========================================================= -->
+    <main class="login-main">
+
+        <!-- Decorative background shapes -->
+        <div class="background-shape shape-one"></div>
+        <div class="background-shape shape-two"></div>
+        <div class="background-shape shape-three"></div>
+        <div class="background-shape shape-four"></div>
+
+
+        <!-- =====================================================
+             LEFT WELCOME SECTION
+             ===================================================== -->
+        <section class="welcome-section">
+
+            <div class="welcome-content">
+
+                <div class="welcome-label">
+                    WELCOME TO
+                </div>
+
+                <div class="welcome-accent"></div>
+
+                <h1>
+                    METRO Ultra Fresh<br/>
+                    Management
+                </h1>
+
+                <p class="welcome-description">
+                    Streamlining ordering, stock management and
+                    supplier operations for a fresher tomorrow.
+                </p>
+
+            </div>
+
+
+            <!-- Feature information -->
+            <div class="feature-section">
+
+                <div class="feature-item">
+
+                    <div class="feature-icon">
+                        🛒
+                    </div>
+
+                    <div class="feature-title">
+                        Ordering
+                    </div>
+
+                    <div class="feature-description">
+                        Efficient order<br/>
+                        management
+                    </div>
+
+                </div>
+
+
+                <div class="feature-separator"></div>
+
+
+                <div class="feature-item">
+
+                    <div class="feature-icon">
+                        ◇
+                    </div>
+
+                    <div class="feature-title">
+                        Stock Management
+                    </div>
+
+                    <div class="feature-description">
+                        Real-time visibility
+                    </div>
+
+                </div>
+
+
+                <div class="feature-separator"></div>
+
+
+                <div class="feature-item">
+
+                    <div class="feature-icon">
+                        ♙
+                    </div>
+
+                    <div class="feature-title">
+                        Supplier Collaboration
+                    </div>
+
+                    <div class="feature-description">
+                        Stronger partnerships
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             LOGIN SECTION
+             ===================================================== -->
+        <section class="login-section">
+
+            <div class="login-card">
+
+                <!-- Card branding -->
+                <div class="card-brand">
+
+                    <div class="card-metro-logo">
+                        METRO
+                    </div>
+
+                    <div class="card-application-name">
+                        Ultra Fresh Management
+                    </div>
+
+                    <div class="card-accent"></div>
+
+                </div>
+
+
+                <!-- Existing Wicket feedback -->
+                <div wicket:id="feedback"
+                     class="feedback">
+                </div>
+
+
+                <!-- Existing Wicket login form -->
+                <form wicket:id="loginForm"
+                      class="login-form">
+
+                    <!-- Username -->
+                    <div class="input-group">
+
+                        <label for="username">
+                            User name
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                ♙
+                            </span>
+
+                            <input id="username"
+                                   wicket:id="username"
+                                   type="text"
+                                   placeholder="Enter your user name"
+                                   autocomplete="username"/>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Password -->
+                    <div class="input-group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                🔒
+                            </span>
+
+                            <input id="password"
+                                   wicket:id="password"
+                                   type="password"
+                                   placeholder="Enter your password"
+                                   autocomplete="current-password"/>
+
+                            <span class="password-icon">
+                                ◉
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Existing buttons -->
+                    <div class="actions">
+
+                        <button wicket:id="loginButton"
+                                class="login-button"
+                                type="submit"
+                                title="Log on">
+                            <span>Log On</span>
+                            <span class="button-arrow">→</span>
+                        </button>
+
+                        <button wicket:id="resetButton"
+                                class="reset-button"
+                                type="submit"
+                                title="Reset">
+                            Cancel
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+                <!-- Footer -->
+                <div class="login-card-footer">
+                    © 2026 METRO Ultra Fresh Management.
+                    All rights reserved.
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org" lang="en">
+  <body>
+    <main class="export-page">
+      <header class="export-header">
+        <p class="eyebrow">METRO / UFM</p>
+        <h1>DSD Order Export Confirmation</h1>
+        <p>Review the saved order details before downloading the PDF.</p>
+      </header>
+
+      <section class="summary-grid" aria-label="Saved order information">
+        <div><span>PUAR</span><strong wicket:id="summaryPuar"></strong></div>
+        <div><span>SL</span><strong wicket:id="summarySl"></strong></div>
+        <div><span>SID</span><strong wicket:id="summarySid"></strong></div>
+        <div><span>Store Name</span><strong wicket:id="summaryStoreName"></strong></div>
+        <div><span>Supplier No</span><strong wicket:id="summarySupplierNumber"></strong></div>
+        <div><span>Supplier Name</span><strong wicket:id="summarySupplierName"></strong></div>
+        <div><span>Delivery Day</span><strong wicket:id="summaryDeliveryDay"></strong></div>
+        <div><span>Order</span><strong wicket:id="summaryOrder"></strong></div>
+      </section>
+
+      <section class="saved-results" aria-label="Saved DSD Order results">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>S/G (CNU)</th><th>Art-No</th><th>Var-No</th><th>Bundle-No</th><th>Subsys No.</th>
+                <th>Description</th><th>Sorttext</th><th>Sizetext</th><th>CBB</th><th>MOQ</th>
+                <th>Order Qty</th><th>Price</th><th>MRP</th><th>Promotion</th><th>Stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr wicket:id="savedRows">
+                <td wicket:id="resultSgCnu"></td><td wicket:id="resultArticleNumber"></td><td wicket:id="resultVariantNumber"></td>
+                <td wicket:id="resultBundleNumber"></td><td wicket:id="resultSubsystemNumber"></td><td wicket:id="resultDescription"></td>
+                <td wicket:id="resultSortText"></td><td wicket:id="resultSizeText"></td><td wicket:id="resultCbb"></td>
+                <td wicket:id="resultMoq"></td><td wicket:id="resultOrderQuantity"></td><td wicket:id="resultPrice"></td>
+                <td wicket:id="resultMrp"></td><td wicket:id="resultPromotion"></td><td wicket:id="resultStock"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="export-actions">
+        <div wicket:id="exportMessage" class="export-error" aria-live="polite"></div>
+        <a wicket:id="backLink" href="#" class="secondary-action">Back</a>
+        <a wicket:id="confirmExportLink" href="#" class="primary-action">Confirm Export</a>
+      </footer>
+    </main>
+  </body>
+</html>
