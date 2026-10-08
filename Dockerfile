@@ -11,4 +11,4 @@ RUN sbt compile
 
 EXPOSE 10000
 
-CMD ["sh", "-c", "UFM_PORT=${PORT:-10000} sbt runMain com.metro.ufm.MetroUfmServer"]
+CMD ["sh", "-c", "UFM_PORT=${PORT:-10000} sbt 'runMain com.metro.ufm.MetroUfmServer'"]
