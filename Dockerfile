@@ -1,4 +1,4 @@
-FROM sbtscala/scala-sbt:eclipse-temurin-17.0.14_7_1.10.7_2.13.14
+FROM sbtscala/scala-sbt:eclipse-temurin-17.0.14_7_1.10.7
 
 WORKDIR /app
 
