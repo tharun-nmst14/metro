@@ -16,4 +16,4 @@ RUN cp target/scala-2.13/metro-ufm-demo-assembly-*.jar /app/metro-ufm-demo.jar
 
 EXPOSE 10000
 
-CMD ["sh", "-c", "exec UFM_PORT=${PORT:-10000} java -Xms64m -Xmx256m -XX:MaxMetaspaceSize=128m -jar /app/metro-ufm-demo.jar"]
+CMD ["sh", "-c", "export UFM_PORT=${PORT:-10000} && exec java -Xms64m -Xmx256m -XX:MaxMetaspaceSize=128m -jar /app/metro-ufm-demo.jar"]
