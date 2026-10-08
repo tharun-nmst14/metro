@@ -13,6 +13,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior
 import org.apache.wicket.markup.html.basic.Label
 import org.apache.wicket.markup.html.form.{DropDownChoice, Radio, RadioGroup, TextField}
+import org.apache.wicket.markup.html.image.Image
 import org.apache.wicket.markup.html.list.ListView
 import org.apache.wicket.markup.html.{WebMarkupContainer, WebPage}
 import org.apache.wicket.AttributeModifier
@@ -893,6 +894,7 @@ class DsdOrderPage extends WebPage {
     )
 
   emptyState.setOutputMarkupId(true)
+  emptyState.add(new Image("emptyImage", new PackageResourceReference(classOf[DsdOrderPage], "null.png")))
 
   // ============================================================
   // FILTER SUMMARY

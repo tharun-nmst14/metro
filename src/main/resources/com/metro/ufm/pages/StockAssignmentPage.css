@@ -212,6 +212,21 @@ body {
 .stock-assignment-result-toolbar button:nth-child(5)::before { content: "▤"; }
 .stock-assignment-result-toolbar button:nth-child(6)::before { content: "↗"; }
 
+.stock-assignment-result-toolbar button:disabled {
+  opacity: 0.5;
+}
+
+.stock-assignment-save-message {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 12px;
+  border-bottom: 1px solid #c8dfc9;
+  background: #eef7ef;
+  color: #245b2a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .stock-assignment-pagination {
   display: flex;
   align-items: center;
@@ -316,6 +331,16 @@ body {
   background: #fff;
 }
 
+.stock-assignment-result-table td:nth-child(14) input {
+  width: 82px;
+  box-sizing: border-box;
+  padding: 4px 6px;
+  border: 1px solid #8a7a3a;
+  background: #fff;
+  color: #111;
+  text-align: right;
+}
+
 .stock-assignment-result-table td:nth-child(7),
 .stock-assignment-result-table td:nth-child(8),
 .stock-assignment-result-table td:nth-child(9) {
@@ -369,23 +394,16 @@ body {
 }
 
 .stock-assignment-null {
-  position: relative;
   width: 160px;
   height: 160px;
   margin: 30px 0 0 22px;
-  border: 8px solid #000;
-  border-radius: 50%;
-  transform: rotate(-45deg);
 }
 
-.stock-assignment-null::before {
-  content: "";
-  position: absolute;
+.stock-assignment-null img {
+  display: block;
   width: 160px;
-  height: 8px;
-  left: -8px;
-  top: 72px;
-  background: #000;
+  height: 160px;
+  object-fit: contain;
 }
 
 .stock-assignment-filter-modal {

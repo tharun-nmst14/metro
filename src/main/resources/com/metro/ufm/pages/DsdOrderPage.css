@@ -439,13 +439,14 @@ body {
   width: 160px;
   height: 160px;
   margin: 30px 0 0 22px;
-  border: 8px solid #000;
-  border-radius: 50%;
-  transform: rotate(-45deg);
-  position: relative;
-} 
+}
 
- 
+.empty-panel img {
+  display: block;
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+}
 
 .result-area {
   margin: 18px 3%;
@@ -656,15 +657,6 @@ body {
   text-align: inherit;
 }
 
-.empty-panel::before {
-  content: "";
-  position: absolute;
-  width: 160px;
-  height: 8px;
-  background: #000;
-  left: -8px;
-  top: 72px;
-}
 .save-message {
     display: block;
     margin: 6px 0;

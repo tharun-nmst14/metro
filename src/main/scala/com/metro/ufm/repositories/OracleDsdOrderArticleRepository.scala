@@ -5,8 +5,7 @@ import scala.util.Using
 
 import com.metro.ufm.database.OracleConnectionProvider
 import com.metro.ufm.models.DsdOrderArticle
-
-/** Reference-only Oracle implementation. It is not selected by application wiring. */
+ 
 final class OracleDsdOrderArticleRepository(
   connectionProvider: OracleConnectionProvider
 ) extends DsdOrderArticleRepository {
@@ -63,8 +62,7 @@ final class OracleDsdOrderArticleRepository(
 }
 
 object OracleDsdOrderArticleRepository {
-  // CBB, MOQ, stock and the business meaning of the displayed order context
-  // are not represented by confirmed columns in the current proposed schema.
+   
   private[repositories] val FindAllSql =
     """SELECT oh.ORDER_LIST_CODE,
       |       oh.ORDER_NO,

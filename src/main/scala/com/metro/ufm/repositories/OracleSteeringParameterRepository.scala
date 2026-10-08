@@ -6,14 +6,14 @@ import scala.util.Using
 import com.metro.ufm.database.OracleConnectionProvider
 import com.metro.ufm.models.SteeringParameter
 
-/** Reference-only repository contract for parameter persistence; not used by the current UI. */
+ 
 trait SteeringParameterRepository {
   def findAll(): Seq[SteeringParameter]
   def findByCode(code: String): Option[SteeringParameter]
   def update(parameter: SteeringParameter): Int
 }
 
-/** Reference-only Oracle implementation. It is not selected by application wiring. */
+ 
 final class OracleSteeringParameterRepository(
   connectionProvider: OracleConnectionProvider
 ) extends SteeringParameterRepository {
@@ -35,8 +35,7 @@ final class OracleSteeringParameterRepository(
     }.get
   }
 
-  /** Updates an existing record only; key generation and insert semantics are not defined in the draft schema. */
-  override def update(parameter: SteeringParameter): Int = withConnection { connection =>
+   override def update(parameter: SteeringParameter): Int = withConnection { connection =>
     Using.Manager { use =>
       val statement = use(connection.prepareStatement(OracleSteeringParameterRepository.UpdateSql))
       statement.setString(1, parameter.code)

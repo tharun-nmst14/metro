@@ -5,6 +5,7 @@ import com.metro.ufm.config.ApplicationSettings
 import com.metro.ufm.panels.{HeaderPanel, NavigationPanel, UserInfoPanel}
 import org.apache.wicket.markup.head.{CssHeaderItem, IHeaderResponse}
 import org.apache.wicket.markup.html.WebPage
+import org.apache.wicket.markup.html.image.Image
 import org.apache.wicket.request.resource.PackageResourceReference
 
 class ApplicationShellPage extends WebPage {
@@ -17,6 +18,7 @@ class ApplicationShellPage extends WebPage {
   add(new HeaderPanel("headerPanel", "Main Application"))
   add(new NavigationPanel("navigationPanel"))
   add(new UserInfoPanel("userInfoPanel", settings))
+  add(new Image("emptyImage", new PackageResourceReference(classOf[ApplicationShellPage], "null.png")))
 
   override def renderHead(response: IHeaderResponse): Unit = {
     super.renderHead(response)

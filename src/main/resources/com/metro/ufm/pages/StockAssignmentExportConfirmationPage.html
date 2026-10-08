@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org" lang="en">
+  <body>
+    <main class="export-page">
+      <header class="export-header">
+        <p class="eyebrow">METRO / UFM</p>
+        <h1>Stock Assignment Export Confirmation</h1>
+        <p>Review the saved stock assignment details before downloading the PDF.</p>
+      </header>
+
+      <section class="summary-grid" aria-label="Saved stock assignment information">
+        <div><span>Assortment</span><strong wicket:id="summaryAssortment"></strong></div>
+        <div><span>DC</span><strong wicket:id="summaryDc"></strong></div>
+        <div><span>Assignment Day</span><strong wicket:id="summaryAssignmentDay"></strong></div>
+        <div><span>Delivery Day SID</span><strong wicket:id="summaryDeliveryDaySid"></strong></div>
+      </section>
+
+      <section class="saved-results" aria-label="Saved stock assignment results">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>S/G (CNU)</th><th>Merch Group</th><th>Art-No</th><th>Variant</th><th>Bundle</th>
+                <th>Subsystem</th><th>Description</th><th>Sorttext</th><th>Sizetext</th><th>CBB</th><th>BC</th>
+                <th>Sales Forecast</th><th>Store Qty</th><th>Ass. Stock Qty</th><th>Recalc</th>
+                <th>Key Distribution</th><th>Qty Gap</th><th>Remaining Qty</th><th>UFM Stock</th>
+                <th>Promotion</th><th>IBC</th><th>Article Exchange</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr wicket:id="savedRows">
+                <td wicket:id="resultSgCnu"></td><td wicket:id="resultMerchGroup"></td><td wicket:id="resultArticleNumber"></td>
+                <td wicket:id="resultVariant"></td><td wicket:id="resultBundle"></td><td wicket:id="resultSubsystemNumber"></td>
+                <td wicket:id="resultDescription"></td><td wicket:id="resultSortText"></td><td wicket:id="resultSizeText"></td>
+                <td wicket:id="resultCbb"></td><td wicket:id="resultBc"></td><td wicket:id="resultSalesForecast"></td>
+                <td wicket:id="resultStoreQuantity"></td><td wicket:id="resultAssignedStockQuantity"></td><td wicket:id="resultRecalc"></td>
+                <td wicket:id="resultKeyDistribution"></td><td wicket:id="resultQuantityGap"></td><td wicket:id="resultRemainingQuantity"></td>
+                <td wicket:id="resultUfmStock"></td><td wicket:id="resultPromotion"></td><td wicket:id="resultIbc"></td>
+                <td wicket:id="resultArticleExchange"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="export-actions">
+        <div wicket:id="exportMessage" class="export-error" aria-live="polite"></div>
+        <a wicket:id="backLink" href="#" class="secondary-action">Back</a>
+        <a wicket:id="confirmExportLink" href="#" class="primary-action">Confirm Export</a>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -7,11 +7,13 @@ import com.metro.ufm.repositories.MockStockAssignmentRepository
 import com.metro.ufm.services.StockAssignmentService
 import org.apache.wicket.ajax.AjaxRequestTarget
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior
+import org.apache.wicket.ajax.AjaxEventBehavior
 import org.apache.wicket.ajax.markup.html.AjaxLink
 import org.apache.wicket.AttributeModifier
 import org.apache.wicket.markup.head.{CssHeaderItem, IHeaderResponse}
 import org.apache.wicket.markup.html.basic.Label
 import org.apache.wicket.markup.html.form.{CheckBox, DropDownChoice, TextField}
+import org.apache.wicket.markup.html.image.Image
 import org.apache.wicket.markup.html.list.ListView
 import org.apache.wicket.markup.html.{WebMarkupContainer, WebPage}
 import org.apache.wicket.model.Model
@@ -68,6 +70,11 @@ class StockAssignmentPage extends WebPage {
   private val pageNumbersModel = new ListModel[Int](new java.util.ArrayList[Int]())
   private val resultCountModel = Model.of(Integer.valueOf(0))
   private val pageSize = 1
+  private val editedAssignedStockQuantities = scala.collection.mutable.Map.empty[Int, String]
+  private val saveEnabledModel = Model.of[java.lang.Boolean](java.lang.Boolean.FALSE)
+  private val exportEnabledModel = Model.of[java.lang.Boolean](java.lang.Boolean.FALSE)
+  private var savedExportData: Option[StockAssignmentExportData] = None
+  private val saveMessageModel = Model.of("")
 
   private def copyCurrentCriteriaToDraft(): Unit = {
     draftAssortmentModel.setObject(assortmentModel.getObject)
@@ -85,6 +92,56 @@ class StockAssignmentPage extends WebPage {
     draftArticleDescriptionModel.setObject(articleDescriptionModel.getObject)
     draftRemainingStockModel.setObject(remainingStockModel.getObject)
   }
+
+  private def updateEditedAssignedStockQuantity(rowIndex: Int, originalValue: String, value: String): Unit = {
+    if (value.trim == originalValue.trim) editedAssignedStockQuantities.remove(rowIndex)
+    else editedAssignedStockQuantities.update(rowIndex, value)
+    saveEnabledModel.setObject(editedAssignedStockQuantities.nonEmpty)
+    exportEnabledModel.setObject(editedAssignedStockQuantities.isEmpty && savedExportData.nonEmpty)
+  }
+
+  private def saveChanges(target: AjaxRequestTarget): Unit = {
+    val invalidValue = editedAssignedStockQuantities.values.find { value =>
+      value.trim.isEmpty || !isDecimal(value)
+    }
+
+    invalidValue match {
+      case Some(_) =>
+        saveMessageModel.setObject("Ass. Stock Qty must be a numeric value.")
+        saveMessage.setVisible(true)
+      case None =>
+        editedAssignedStockQuantities.foreach { case (rowIndex, value) =>
+          val row = allResultRows(rowIndex)
+          allResultRows.update(rowIndex, row.copy(assignedStockQuantity = value))
+        }
+        editedAssignedStockQuantities.clear()
+        saveEnabledModel.setObject(false)
+        savedExportData = Some(
+          StockAssignmentExportData(
+            assortment = assortmentModel.getObject,
+            dc = dcModel.getObject,
+            assignmentDay = assignmentDayModel.getObject,
+            deliveryDaySid = deliveryDaySidModel.getObject,
+            rows = allResultRows.toSeq
+          )
+        )
+        exportEnabledModel.setObject(true)
+        saveMessageModel.setObject("Stock assignment details saved successfully.")
+        saveMessage.setVisible(true)
+        showPage(currentPageModel.getObject)
+        target.add(resultRowsContainer, pagination)
+    }
+
+    target.add(saveIcon, exportIcon, saveMessage)
+  }
+
+  private def isDecimal(value: String): Boolean =
+    try {
+      new java.math.BigDecimal(value.trim)
+      true
+    } catch {
+      case _: NumberFormatException => false
+    }
 
   private def applyDraftCriteria(): Unit = {
     assortmentModel.setObject(draftAssortmentModel.getObject)
@@ -133,10 +190,12 @@ class StockAssignmentPage extends WebPage {
 
   private val emptyState = new WebMarkupContainer("emptyState")
   emptyState.setOutputMarkupId(true)
+  emptyState.add(new Image("emptyImage", new PackageResourceReference(classOf[StockAssignmentPage], "null.png")))
 
   private val resultRows = new ListView[StockAssignmentResult]("resultRows", resultRowsModel) {
     override def populateItem(item: org.apache.wicket.markup.html.list.ListItem[StockAssignmentResult]): Unit = {
       val result = item.getModelObject
+      val rowIndex = currentPageModel.getObject * pageSize + item.getIndex
       item.add(new Label("resultSgCnu", result.sgCnu))
       item.add(new Label("resultMerchGroup", result.merchGroup))
       item.add(new Label("resultArticleNumber", result.articleNumber))
@@ -150,7 +209,22 @@ class StockAssignmentPage extends WebPage {
       item.add(new Label("resultBc", result.bc))
       item.add(new Label("resultSalesForecast", result.salesForecast))
       item.add(new Label("resultStoreQuantity", result.storeQuantity))
-      item.add(new Label("resultAssignedStockQuantity", result.assignedStockQuantity))
+      val assignedStockQuantityField = new TextField[String](
+        "resultAssignedStockQuantity",
+        Model.of(editedAssignedStockQuantities.getOrElse(rowIndex, result.assignedStockQuantity))
+      )
+      assignedStockQuantityField.setOutputMarkupId(true)
+      assignedStockQuantityField.add(new AjaxEventBehavior("change") {
+        override def onEvent(target: AjaxRequestTarget): Unit = {
+          val submittedValue = getRequest.getRequestParameters
+            .getParameterValue(assignedStockQuantityField.getInputName)
+            .toString
+          updateEditedAssignedStockQuantity(rowIndex, result.assignedStockQuantity, submittedValue)
+          saveMessage.setVisible(false)
+          target.add(saveIcon, exportIcon, saveMessage)
+        }
+      })
+      item.add(assignedStockQuantityField)
       item.add(new Label("resultRecalc", result.recalc))
       item.add(new Label("resultKeyDistribution", result.keyDistribution))
       item.add(new Label("resultQuantityGap", result.quantityGap))
@@ -163,6 +237,7 @@ class StockAssignmentPage extends WebPage {
   }
 
   private val resultRowsContainer = new WebMarkupContainer("resultRowsContainer")
+  resultRowsContainer.setOutputMarkupId(true)
   resultRowsContainer.add(resultRows)
 
   private val dcDetailRows = new ListView[StockAssignmentDcDetail]("dcDetailRows", dcDetailRowsModel) {
@@ -186,12 +261,30 @@ class StockAssignmentPage extends WebPage {
   dcDetailRowsContainer.add(dcDetailRows)
 
   private val resultToolbar = new WebMarkupContainer("resultToolbar")
-  resultToolbar.add(new WebMarkupContainer("saveIcon"))
+  private val saveIcon = new WebMarkupContainer("saveIcon")
+  saveIcon.setOutputMarkupId(true)
+  saveIcon.add(AttributeModifier.replace("disabled", saveEnabledModel.map(enabled => if (enabled) null else "disabled")))
+  saveIcon.add(new AjaxEventBehavior("click") {
+    override def onEvent(target: AjaxRequestTarget): Unit = saveChanges(target)
+  })
+  resultToolbar.add(saveIcon)
   resultToolbar.add(new WebMarkupContainer("refreshIcon"))
   resultToolbar.add(new WebMarkupContainer("sendIcon"))
   resultToolbar.add(new WebMarkupContainer("truckIcon"))
   resultToolbar.add(new WebMarkupContainer("databaseIcon"))
-  resultToolbar.add(new WebMarkupContainer("exportIcon"))
+  private val exportIcon = new WebMarkupContainer("exportIcon")
+  exportIcon.setOutputMarkupId(true)
+  exportIcon.add(AttributeModifier.replace("disabled", exportEnabledModel.map(enabled => if (enabled) null else "disabled")))
+  exportIcon.add(new AjaxEventBehavior("click") {
+    override def onEvent(target: AjaxRequestTarget): Unit = {
+      savedExportData.foreach(data => setResponsePage(new StockAssignmentExportConfirmationPage(data)))
+    }
+  })
+  resultToolbar.add(exportIcon)
+
+  private val saveMessage = new Label("saveMessage", saveMessageModel)
+  saveMessage.setOutputMarkupPlaceholderTag(true)
+  saveMessage.setVisible(false)
 
   private def pageCount: Int = math.max(1, math.ceil(allResultRows.size.toDouble / pageSize).toInt)
 
@@ -251,6 +344,7 @@ class StockAssignmentPage extends WebPage {
   resultTableContainer.setOutputMarkupId(true)
   resultTableContainer.setVisible(false)
   resultTableContainer.add(resultToolbar)
+  resultTableContainer.add(saveMessage)
   resultTableContainer.add(resultRowsContainer)
   resultTableContainer.add(dcDetailRowsContainer)
   resultTableContainer.add(pagination)
@@ -342,6 +436,11 @@ class StockAssignmentPage extends WebPage {
     override def onClick(target: AjaxRequestTarget): Unit = {
       applyDraftCriteria()
       allResultRows.clear()
+      editedAssignedStockQuantities.clear()
+      saveEnabledModel.setObject(false)
+      exportEnabledModel.setObject(false)
+      savedExportData = None
+      saveMessage.setVisible(false)
       allResultRows ++= stockAssignmentService.search(
         draftSgNumberModel.getObject,
         draftArticleNumberModel.getObject,

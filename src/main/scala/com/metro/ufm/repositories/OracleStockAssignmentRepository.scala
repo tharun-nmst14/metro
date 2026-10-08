@@ -6,7 +6,7 @@ import scala.util.Using
 import com.metro.ufm.database.OracleConnectionProvider
 import com.metro.ufm.models.{StockAssignmentDcDetail, StockAssignmentResult}
 
-/** Reference-only Oracle implementation. It is not selected by application wiring. */
+ 
 final class OracleStockAssignmentRepository(
   connectionProvider: OracleConnectionProvider
 ) extends StockAssignmentRepository {
@@ -89,7 +89,7 @@ final class OracleStockAssignmentRepository(
 }
 
 object OracleStockAssignmentRepository {
-  // These are reads only; unspecified business calculations and fields are not inferred.
+   
   private[repositories] val FindAllSql =
     """SELECT a.SG_CNU,
       |       mg.MERCH_GROUP_CODE,

@@ -32,8 +32,9 @@
         </div>
 
         <div wicket:id="resultArea" class="stock-assignment-result-area" aria-label="Stock assignment result area">
-          <div wicket:id="emptyState" class="stock-assignment-null" aria-hidden="true"></div>
+          <div wicket:id="emptyState" class="stock-assignment-null" aria-hidden="true"><img wicket:id="emptyImage" alt="" /></div>
           <div wicket:id="resultTableContainer" class="stock-assignment-result-table-container">
+            <div wicket:id="saveMessage" class="stock-assignment-save-message" role="status" aria-live="polite"></div>
             <div class="stock-assignment-result-content">
               <aside wicket:id="resultToolbar" class="stock-assignment-result-toolbar" aria-label="Result actions">
                 <button wicket:id="saveIcon" type="button" aria-label="Save"></button>
@@ -53,7 +54,7 @@
                     </thead>
                     <tbody wicket:id="resultRowsContainer">
                       <tr wicket:id="resultRows">
-                        <td wicket:id="resultSgCnu"></td><td wicket:id="resultMerchGroup"></td><td wicket:id="resultArticleNumber"></td><td wicket:id="resultVariant"></td><td wicket:id="resultBundle"></td><td wicket:id="resultSubsystemNumber"></td><td wicket:id="resultDescription"></td><td wicket:id="resultSortText"></td><td wicket:id="resultSizeText"></td><td wicket:id="resultCbb"></td><td wicket:id="resultBc"></td><td wicket:id="resultSalesForecast"></td><td wicket:id="resultStoreQuantity"></td><td wicket:id="resultAssignedStockQuantity"></td><td wicket:id="resultRecalc"></td><td wicket:id="resultKeyDistribution"></td><td wicket:id="resultQuantityGap"></td><td wicket:id="resultRemainingQuantity"></td><td wicket:id="resultUfmStock"></td><td wicket:id="resultPromotion"></td><td wicket:id="resultIbc"></td><td wicket:id="resultArticleExchange"></td>
+                        <td wicket:id="resultSgCnu"></td><td wicket:id="resultMerchGroup"></td><td wicket:id="resultArticleNumber"></td><td wicket:id="resultVariant"></td><td wicket:id="resultBundle"></td><td wicket:id="resultSubsystemNumber"></td><td wicket:id="resultDescription"></td><td wicket:id="resultSortText"></td><td wicket:id="resultSizeText"></td><td wicket:id="resultCbb"></td><td wicket:id="resultBc"></td><td wicket:id="resultSalesForecast"></td><td wicket:id="resultStoreQuantity"></td><td><input wicket:id="resultAssignedStockQuantity" type="text" aria-label="Assigned stock quantity" /></td><td wicket:id="resultRecalc"></td><td wicket:id="resultKeyDistribution"></td><td wicket:id="resultQuantityGap"></td><td wicket:id="resultRemainingQuantity"></td><td wicket:id="resultUfmStock"></td><td wicket:id="resultPromotion"></td><td wicket:id="resultIbc"></td><td wicket:id="resultArticleExchange"></td>
                       </tr>
                     </tbody>
                   </table>
