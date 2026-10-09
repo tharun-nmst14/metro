@@ -999,13 +999,13 @@ class DsdOrderPage extends WebPage {
 
   resultArea.setOutputMarkupId(true)
 
+  // IMPORTANT:
+  // saveMessage is added here, outside resultToolbar
+  // and before resultTableContainer.
   resultArea.add(
     filterSummary
   )
 
-  // IMPORTANT:
-  // saveMessage is added here, outside resultToolbar
-  // and before resultTableContainer.
   resultArea.add(
     saveMessage
   )
@@ -1171,6 +1171,7 @@ class DsdOrderPage extends WebPage {
     summaryOrderModel.setObject(
       orderListModel.getObject
     )
+
   }
 
   // ============================================================

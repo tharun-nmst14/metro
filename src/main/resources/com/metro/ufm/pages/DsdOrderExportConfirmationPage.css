@@ -1,5 +1,5 @@
 body { background: #eef2f1; color: #173b3f; font-family: Georgia, 'Times New Roman', serif; }
-.export-page { max-width: 1500px; margin: 32px auto; padding: 32px; background: #fff; border-top: 8px solid #e36f3d; box-shadow: 0 12px 30px rgba(23, 59, 63, .12); }
+.export-page { max-width: 1500px; margin: 32px auto; padding: 32px; background: #fff; border-top: 8px solid #f3c44a; box-shadow: 0 12px 30px rgba(23, 59, 63, .12); }
 .export-header { border-bottom: 1px solid #c9d5d2; padding-bottom: 20px; }
 .eyebrow { color: #e36f3d; font: 700 12px Arial, sans-serif; letter-spacing: 2px; }
 h1 { margin: 0 0 8px; font-size: 32px; }
@@ -18,5 +18,5 @@ tbody tr:nth-child(even) { background: #f7faf9; }
 .export-error { margin-right: auto; color: #a43f2a; font: 13px Arial, sans-serif; }
 .export-actions a { padding: 11px 18px; text-decoration: none; font: 700 13px Arial, sans-serif; }
 .secondary-action { color: #173b3f; border: 1px solid #9bb4b1; }
-.primary-action { color: #fff; background: #e36f3d; }
+.primary-action { color: #fff; background: #f3b823; }
 @media (max-width: 800px) { .export-page { margin: 0; padding: 20px; } .summary-grid { grid-template-columns: repeat(2, 1fr); } }
