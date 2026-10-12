@@ -171,6 +171,14 @@ class StockAssignmentPage extends WebPage {
   add(new NavigationPanel("navigationPanel"))
   add(new UserInfoPanel("userInfoPanel", settings))
 
+  private def criteriaFilterLink(id: String): AjaxLink[Void] = new AjaxLink[Void](id) {
+    override def onClick(target: AjaxRequestTarget): Unit = {
+      copyCurrentCriteriaToDraft()
+      filterModal.setVisible(true)
+      target.add(filterModal)
+    }
+  }
+
   private val criteriaContainer = new WebMarkupContainer("criteriaContainer")
   criteriaContainer.setOutputMarkupId(true)
   criteriaContainer.add(new Label("assortment", assortmentModel))
@@ -186,6 +194,21 @@ class StockAssignmentPage extends WebPage {
   criteriaContainer.add(new Label("quantityGap", quantityGapModel))
   criteriaContainer.add(new Label("exportedDcs", exportedDcsModel))
   criteriaContainer.add(new Label("unexportedDcs", unexportedDcsModel))
+  Seq(
+    "assortmentFilterLink",
+    "puarFilterLink",
+    "dcFilterLink",
+    "assignmentDayFilterLink",
+    "deliveryDaySidFilterLink",
+    "cutoffTimeFilterLink",
+    "articlesWithQuantityFilterLink",
+    "storesWithQuantityFilterLink",
+    "autoExportAllowedFilterLink",
+    "pushThroughFilterLink",
+    "quantityGapFilterLink",
+    "exportedDcsFilterLink",
+    "unexportedDcsFilterLink"
+  ).foreach(id => criteriaContainer.add(criteriaFilterLink(id)))
   add(criteriaContainer)
 
   private val emptyState = new WebMarkupContainer("emptyState")
@@ -417,14 +440,6 @@ class StockAssignmentPage extends WebPage {
     filterModal.setVisible(false)
     target.add(filterModal)
   }
-
-  add(new AjaxLink[Void]("openFilterLink") {
-    override def onClick(target: AjaxRequestTarget): Unit = {
-      copyCurrentCriteriaToDraft()
-      filterModal.setVisible(true)
-      target.add(filterModal)
-    }
-  })
 
   filterModal.add(new AjaxLink[Void]("closeFilterLink") {
     override def onClick(target: AjaxRequestTarget): Unit = closeFilter(target)

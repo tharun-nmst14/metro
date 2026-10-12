@@ -38,6 +38,7 @@ body {
 }
 
 .stock-assignment-criteria-cell {
+  position: relative;
   display: grid;
   min-width: 0;
   grid-template-columns: minmax(0, 1fr) minmax(28px, 0.58fr);
@@ -45,6 +46,24 @@ body {
   min-height: 48px;
   border: 1px solid #fff;
   background: #f3c11f;
+}
+
+.stock-assignment-criteria-trigger {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  color: transparent;
+  text-decoration: none;
+}
+
+.stock-assignment-criteria-trigger:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.stock-assignment-criteria-trigger:focus-visible {
+  outline: 2px solid #1f7bc1;
+  outline-offset: -2px;
 }
 
 .stock-assignment-criteria-cell strong {
@@ -81,33 +100,6 @@ body {
   width: 16px;
   height: 16px;
   margin: 0;
-}
-
-.stock-assignment-filter-trigger {
-  display: inline-flex;
-  align-items: center;
-  min-height: 38px;
-  padding: 7px 14px;
-  border: 1px solid #004276;
-  background: #004276;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.stock-assignment-filter-row {
-  display: flex;
-  justify-content: flex-end;
-  min-height: 58px;
-  padding-top: 12px;
-  box-sizing: border-box;
-}
-
-.stock-assignment-filter-trigger:hover,
-.stock-assignment-filter-trigger:focus {
-  background: #1f4f9b;
 }
 
 @media (max-width: 1200px) {

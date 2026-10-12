@@ -6,24 +6,18 @@
     <section wicket:id="userInfoPanel"></section>
 
     <main class="dsd-order-page" aria-label="DSD Order page">
-      <div class="order-toolbar">
-        <a wicket:id="openFilterLink" class="filter-trigger" href="#">Filter criteria</a>
-      </div>
-
       <section wicket:id="resultArea" class="result-area" aria-label="DSD Order results">
-
-        <!-- Selected filter summary -->
         <div wicket:id="filterSummary"
              class="filter-summary"
              aria-label="Selected filter summary">
-          <span>PUAR: <strong wicket:id="summaryPuar"></strong></span>
-          <span>SL: <strong wicket:id="summarySl"></strong></span>
-          <span>SID: <strong wicket:id="summarySid"></strong></span>
-          <span>Store Name: <strong wicket:id="summaryStoreName"></strong></span>
-          <span>Supplier No: <strong wicket:id="summarySupplierNumber"></strong></span>
-          <span>Supplier Name: <strong wicket:id="summarySupplierName"></strong></span>
-          <span>Delivery Day: <strong wicket:id="summaryDeliveryDay"></strong></span>
-          <span>Order: <strong wicket:id="summaryOrder"></strong></span>
+          <a wicket:id="puarFilterLink" class="filter-summary-field" href="#"><span class="filter-summary-label">PUAR</span><strong wicket:id="summaryPuar"></strong></a>
+          <a wicket:id="slFilterLink" class="filter-summary-field" href="#"><span class="filter-summary-label">SL</span><strong wicket:id="summarySl"></strong></a>
+          <a wicket:id="sidFilterLink" class="filter-summary-field" href="#"><span class="filter-summary-label">SID</span><strong wicket:id="summarySid"></strong></a>
+          <a wicket:id="storeNameFilterLink" class="filter-summary-field" href="#"><span class="filter-summary-label">Store Name</span><strong wicket:id="summaryStoreName"></strong></a>
+          <a wicket:id="supplierNumberFilterLink" class="filter-summary-field" href="#"><span class="filter-summary-label">Supplier No</span><strong wicket:id="summarySupplierNumber"></strong></a>
+          <a wicket:id="supplierNameFilterLink" class="filter-summary-field" href="#"><span class="filter-summary-label">Supplier Name</span><strong wicket:id="summarySupplierName"></strong></a>
+          <a wicket:id="deliveryDayFilterLink" class="filter-summary-field" href="#"><span class="filter-summary-label">Delivery Day</span><strong wicket:id="summaryDeliveryDay"></strong></a>
+          <a wicket:id="orderFilterLink" class="filter-summary-field" href="#"><span class="filter-summary-label">Order</span><strong wicket:id="summaryOrder"></strong></a>
         </div>
 
         <!-- Save confirmation / validation message -->

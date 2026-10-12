@@ -9,26 +9,22 @@
       <section class="stock-assignment-main" aria-label="Stock assignment content">
         <div wicket:id="criteriaContainer" class="stock-assignment-criteria" aria-label="Stock assignment criteria">
           <div class="stock-assignment-criteria-row stock-assignment-criteria-row-primary">
-            <div class="stock-assignment-criteria-cell stock-assignment-criteria-cell-assortment"><strong>Assortment:</strong><span wicket:id="assortment"></span></div>
-            <div class="stock-assignment-criteria-cell"><strong>PUAR:</strong><span wicket:id="puar"></span></div>
-            <div class="stock-assignment-criteria-cell"><strong>DC</strong><span wicket:id="dc"></span></div>
+            <div class="stock-assignment-criteria-cell stock-assignment-criteria-cell-assortment"><strong>Assortment:</strong><span wicket:id="assortment"></span><a wicket:id="assortmentFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for Assortment"></a></div>
+            <div class="stock-assignment-criteria-cell"><strong>PUAR:</strong><span wicket:id="puar"></span><a wicket:id="puarFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for PUAR"></a></div>
+            <div class="stock-assignment-criteria-cell"><strong>DC</strong><span wicket:id="dc"></span><a wicket:id="dcFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for DC"></a></div>
           </div>
           <div class="stock-assignment-criteria-row stock-assignment-criteria-row-secondary">
-            <div class="stock-assignment-criteria-cell"><strong>Assignment<br />Day:</strong><span wicket:id="assignmentDay"></span></div>
-            <div class="stock-assignment-criteria-cell"><strong>Del.Day<br />SID:</strong><span wicket:id="deliveryDaySid"></span></div>
-            <div class="stock-assignment-criteria-cell"><strong>Cut-off<br />time:</strong><span wicket:id="cutoffTime"></span></div>
-            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>Art.with<br />quant.:</strong><input wicket:id="articlesWithQuantity" type="checkbox" aria-label="Articles with quantity" /></label>
-            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>Stores with<br />quant.:</strong><input wicket:id="storesWithQuantity" type="checkbox" aria-label="Stores with quantity" /></label>
-            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>AutoExpAllowed</strong><input wicket:id="autoExportAllowed" type="checkbox" aria-label="Auto export allowed" /></label>
-            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>Push<br />Through</strong><input wicket:id="pushThrough" type="checkbox" aria-label="Push through" /></label>
-            <div class="stock-assignment-criteria-cell"><strong>Qty.Gap:</strong><span wicket:id="quantityGap"></span></div>
-            <div class="stock-assignment-criteria-cell"><strong>Exported<br />DC's:</strong><span wicket:id="exportedDcs"></span></div>
-            <div class="stock-assignment-criteria-cell"><strong>UnExported<br />DC's:</strong><span wicket:id="unexportedDcs"></span></div>
+            <div class="stock-assignment-criteria-cell"><strong>Assignment<br />Day:</strong><span wicket:id="assignmentDay"></span><a wicket:id="assignmentDayFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for Assignment Day"></a></div>
+            <div class="stock-assignment-criteria-cell"><strong>Del.Day<br />SID:</strong><span wicket:id="deliveryDaySid"></span><a wicket:id="deliveryDaySidFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for Delivery Day SID"></a></div>
+            <div class="stock-assignment-criteria-cell"><strong>Cut-off<br />time:</strong><span wicket:id="cutoffTime"></span><a wicket:id="cutoffTimeFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for Cut-off time"></a></div>
+            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>Art.with<br />quant.:</strong><input wicket:id="articlesWithQuantity" type="checkbox" aria-label="Articles with quantity" /><a wicket:id="articlesWithQuantityFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for Articles with quantity"></a></label>
+            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>Stores with<br />quant.:</strong><input wicket:id="storesWithQuantity" type="checkbox" aria-label="Stores with quantity" /><a wicket:id="storesWithQuantityFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for Stores with quantity"></a></label>
+            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>AutoExpAllowed</strong><input wicket:id="autoExportAllowed" type="checkbox" aria-label="Auto export allowed" /><a wicket:id="autoExportAllowedFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for AutoExpAllowed"></a></label>
+            <label class="stock-assignment-criteria-cell stock-assignment-check-cell"><strong>Push<br />Through</strong><input wicket:id="pushThrough" type="checkbox" aria-label="Push through" /><a wicket:id="pushThroughFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for Push Through"></a></label>
+            <div class="stock-assignment-criteria-cell"><strong>Qty.Gap:</strong><span wicket:id="quantityGap"></span><a wicket:id="quantityGapFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for Quantity Gap"></a></div>
+            <div class="stock-assignment-criteria-cell"><strong>Exported<br />DC's:</strong><span wicket:id="exportedDcs"></span><a wicket:id="exportedDcsFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for Exported DCs"></a></div>
+            <div class="stock-assignment-criteria-cell"><strong>UnExported<br />DC's:</strong><span wicket:id="unexportedDcs"></span><a wicket:id="unexportedDcsFilterLink" class="stock-assignment-criteria-trigger" href="#" aria-label="Open filter criteria for UnExported DCs"></a></div>
           </div>
-        </div>
-
-        <div class="stock-assignment-filter-row">
-          <a wicket:id="openFilterLink" class="stock-assignment-filter-trigger" href="#">Filter criteria</a>
         </div>
 
         <div wicket:id="resultArea" class="stock-assignment-result-area" aria-label="Stock assignment result area">

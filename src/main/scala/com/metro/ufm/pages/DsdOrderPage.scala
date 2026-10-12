@@ -906,63 +906,29 @@ class DsdOrderPage extends WebPage {
     )
 
   filterSummary.setOutputMarkupId(true)
-  filterSummary.setVisible(false)
+  filterSummary.setVisible(true)
 
-  filterSummary.add(
-    new Label(
-      "summaryPuar",
-      summaryPuarModel
-    )
-  )
+  private def showFilterModal(target: AjaxRequestTarget): Unit = {
+    filterModal.setVisible(true)
+    target.add(filterModal)
+  }
 
-  filterSummary.add(
-    new Label(
-      "summarySl",
-      summarySlModel
-    )
-  )
+  private def summaryFilterLink(id: String, valueLabel: Label): AjaxLink[Void] = {
+    val link = new AjaxLink[Void](id) {
+      override def onClick(target: AjaxRequestTarget): Unit = showFilterModal(target)
+    }
+    link.add(valueLabel)
+    link
+  }
 
-  filterSummary.add(
-    new Label(
-      "summarySid",
-      summarySidModel
-    )
-  )
-
-  filterSummary.add(
-    new Label(
-      "summaryStoreName",
-      summaryStoreNameModel
-    )
-  )
-
-  filterSummary.add(
-    new Label(
-      "summarySupplierNumber",
-      supplierNumberModel
-    )
-  )
-
-  filterSummary.add(
-    new Label(
-      "summarySupplierName",
-      supplierNameModel
-    )
-  )
-
-  filterSummary.add(
-    new Label(
-      "summaryDeliveryDay",
-      summaryDeliveryDayModel
-    )
-  )
-
-  filterSummary.add(
-    new Label(
-      "summaryOrder",
-      summaryOrderModel
-    )
-  )
+  filterSummary.add(summaryFilterLink("puarFilterLink", new Label("summaryPuar", summaryPuarModel)))
+  filterSummary.add(summaryFilterLink("slFilterLink", new Label("summarySl", summarySlModel)))
+  filterSummary.add(summaryFilterLink("sidFilterLink", new Label("summarySid", summarySidModel)))
+  filterSummary.add(summaryFilterLink("storeNameFilterLink", new Label("summaryStoreName", summaryStoreNameModel)))
+  filterSummary.add(summaryFilterLink("supplierNumberFilterLink", new Label("summarySupplierNumber", supplierNumberModel)))
+  filterSummary.add(summaryFilterLink("supplierNameFilterLink", new Label("summarySupplierName", supplierNameModel)))
+  filterSummary.add(summaryFilterLink("deliveryDayFilterLink", new Label("summaryDeliveryDay", summaryDeliveryDayModel)))
+  filterSummary.add(summaryFilterLink("orderFilterLink", new Label("summaryOrder", summaryOrderModel)))
 
   // ============================================================
   // RESULT TABLE CONTAINER
@@ -1307,28 +1273,6 @@ class DsdOrderPage extends WebPage {
 
   add(
     resultArea
-  )
-
-  // ============================================================
-  // FILTER OPEN
-  // ============================================================
-
-  add(
-    new AjaxLink[Void](
-      "openFilterLink"
-    ) {
-
-      override def onClick(
-          target: AjaxRequestTarget
-      ): Unit = {
-
-        filterModal.setVisible(true)
-
-        target.add(
-          filterModal
-        )
-      }
-    }
   )
 
   // ============================================================
