@@ -1,0 +1,185 @@
+CREATE OR REPLACE PACKAGE PKG_UFM_DSD_ORDER AS
+
+    PROCEDURE GET_ORDER_DETAILS(
+        P_ORDER_NO IN ORDER_HEADER.ORDER_NO%TYPE,
+        P_RESULT   OUT SYS_REFCURSOR
+    );
+
+    PROCEDURE GET_ORDER_LINES(
+        P_ORDER_HEADER_ID IN ORDER_HEADER.ORDER_HEADER_ID%TYPE,
+        P_RESULT          OUT SYS_REFCURSOR
+    );
+
+    PROCEDURE GET_DSD_ORDER_RESULTS(
+        P_SUPPLIER_NO IN SUPPLIER.SUPPLIER_NO%TYPE,
+        P_ORDER_NO    IN ORDER_HEADER.ORDER_NO%TYPE,
+        P_ORDER_LIST  IN ORDER_HEADER.ORDER_LIST_CODE%TYPE,
+        P_ARTICLE_NO  IN ARTICLE.ARTICLE_NO%TYPE,
+        P_SUBSYSTEM_NO IN ORDER_LINE.SUBSYSTEM_NO%TYPE,
+        P_DESCRIPTION IN ARTICLE.DESCRIPTION%TYPE,
+        P_RESULT      OUT SYS_REFCURSOR
+    );
+
+    PROCEDURE UPDATE_ORDER_LINE(
+        P_ORDER_LINE_ID IN ORDER_LINE.ORDER_LINE_ID%TYPE,
+        P_ORDER_QUANTITY IN ORDER_LINE.ORDER_QUANTITY%TYPE,
+        P_PRICE IN ORDER_LINE.PRICE%TYPE,
+        P_ROWS_UPDATED OUT NUMBER
+    );
+
+END PKG_UFM_DSD_ORDER;
+/
+
+CREATE OR REPLACE PACKAGE BODY PKG_UFM_DSD_ORDER AS
+
+    PROCEDURE GET_ORDER_DETAILS(
+        P_ORDER_NO IN ORDER_HEADER.ORDER_NO%TYPE,
+        P_RESULT   OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN P_RESULT FOR
+            SELECT
+                OH.ORDER_HEADER_ID,
+                OH.ORDER_NO,
+                OH.ORDER_LIST_CODE,
+                OH.STATUS,
+                S.SUPPLIER_ID,
+                S.SUPPLIER_NO,
+                S.SUPPLIER_NAME,
+                ST.STORE_ID,
+                ST.STORE_NO,
+                ST.STORE_NAME
+            FROM ORDER_HEADER OH
+            LEFT JOIN SUPPLIER S
+                ON S.SUPPLIER_ID = OH.SUPPLIER_ID
+            LEFT JOIN STORE ST
+                ON ST.STORE_ID = OH.STORE_ID
+            WHERE OH.ORDER_NO = P_ORDER_NO
+            ORDER BY OH.ORDER_HEADER_ID;
+    END GET_ORDER_DETAILS;
+
+
+    PROCEDURE GET_ORDER_LINES(
+        P_ORDER_HEADER_ID IN ORDER_HEADER.ORDER_HEADER_ID%TYPE,
+        P_RESULT          OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN P_RESULT FOR
+            SELECT
+                OL.ORDER_LINE_ID,
+                OL.ORDER_HEADER_ID,
+                OL.ARTICLE_ID,
+                A.SG_CNU,
+                A.ARTICLE_NO,
+                COALESCE(OL.SUBSYSTEM_NO, A.SUBSYSTEM_NO)
+                    AS SUBSYSTEM_NO,
+                COALESCE(OL.VARIANT_NO, A.VARIANT_NO)
+                    AS VARIANT_NO,
+                COALESCE(OL.BUNDLE_NO, A.BUNDLE_NO)
+                    AS BUNDLE_NO,
+                A.DESCRIPTION,
+                A.SORT_TEXT,
+                A.SIZE_TEXT,
+                OL.ORDER_QUANTITY,
+                OL.PRICE,
+                OL.MRP,
+                OL.PROMOTION
+            FROM ORDER_LINE OL
+            LEFT JOIN ARTICLE A
+                ON A.ARTICLE_ID = OL.ARTICLE_ID
+            WHERE OL.ORDER_HEADER_ID = P_ORDER_HEADER_ID
+            ORDER BY OL.ORDER_LINE_ID;
+    END GET_ORDER_LINES;
+
+
+    PROCEDURE GET_DSD_ORDER_RESULTS(
+        P_SUPPLIER_NO IN SUPPLIER.SUPPLIER_NO%TYPE,
+        P_ORDER_NO    IN ORDER_HEADER.ORDER_NO%TYPE,
+        P_ORDER_LIST  IN ORDER_HEADER.ORDER_LIST_CODE%TYPE,
+        P_ARTICLE_NO  IN ARTICLE.ARTICLE_NO%TYPE,
+        P_SUBSYSTEM_NO IN ORDER_LINE.SUBSYSTEM_NO%TYPE,
+        P_DESCRIPTION IN ARTICLE.DESCRIPTION%TYPE,
+        P_RESULT      OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN P_RESULT FOR
+            SELECT
+                OH.ORDER_HEADER_ID,
+                OH.ORDER_NO,
+                OH.ORDER_LIST_CODE,
+                OH.STATUS AS ORDER_STATUS,
+                S.SUPPLIER_NO,
+                S.SUPPLIER_NAME,
+                ST.STORE_NO,
+                ST.STORE_NAME,
+                OL.ORDER_LINE_ID,
+                A.SG_CNU,
+                A.ARTICLE_NO,
+                COALESCE(OL.VARIANT_NO, A.VARIANT_NO)
+                    AS VARIANT_NO,
+                COALESCE(OL.BUNDLE_NO, A.BUNDLE_NO)
+                    AS BUNDLE_NO,
+                COALESCE(OL.SUBSYSTEM_NO, A.SUBSYSTEM_NO)
+                    AS SUBSYSTEM_NO,
+                A.DESCRIPTION,
+                A.SORT_TEXT,
+                A.SIZE_TEXT,
+                OL.ORDER_QUANTITY,
+                OL.PRICE,
+                OL.MRP,
+                OL.PROMOTION
+            FROM ORDER_HEADER OH
+            JOIN ORDER_LINE OL
+                ON OL.ORDER_HEADER_ID = OH.ORDER_HEADER_ID
+            LEFT JOIN ARTICLE A
+                ON A.ARTICLE_ID = OL.ARTICLE_ID
+            LEFT JOIN SUPPLIER S
+                ON S.SUPPLIER_ID = OH.SUPPLIER_ID
+            LEFT JOIN STORE ST
+                ON ST.STORE_ID = OH.STORE_ID
+            WHERE
+                (P_SUPPLIER_NO IS NULL
+                    OR S.SUPPLIER_NO = P_SUPPLIER_NO)
+                AND
+                (P_ORDER_NO IS NULL
+                    OR OH.ORDER_NO = P_ORDER_NO)
+                AND
+                (P_ORDER_LIST IS NULL
+                    OR OH.ORDER_LIST_CODE = P_ORDER_LIST)
+                AND
+                (P_ARTICLE_NO IS NULL
+                    OR A.ARTICLE_NO = P_ARTICLE_NO)
+                AND
+                (P_SUBSYSTEM_NO IS NULL
+                    OR COALESCE(OL.SUBSYSTEM_NO, A.SUBSYSTEM_NO)
+                       = P_SUBSYSTEM_NO)
+                AND
+                (P_DESCRIPTION IS NULL
+                    OR UPPER(A.DESCRIPTION)
+                       LIKE '%' || UPPER(P_DESCRIPTION) || '%')
+            ORDER BY OH.ORDER_NO, OL.ORDER_LINE_ID;
+    END GET_DSD_ORDER_RESULTS;
+
+
+    PROCEDURE UPDATE_ORDER_LINE(
+        P_ORDER_LINE_ID IN ORDER_LINE.ORDER_LINE_ID%TYPE,
+        P_ORDER_QUANTITY IN ORDER_LINE.ORDER_QUANTITY%TYPE,
+        P_PRICE IN ORDER_LINE.PRICE%TYPE,
+        P_ROWS_UPDATED OUT NUMBER
+    )
+    AS
+    BEGIN
+        UPDATE ORDER_LINE
+        SET
+            ORDER_QUANTITY = P_ORDER_QUANTITY,
+            PRICE = P_PRICE
+        WHERE ORDER_LINE_ID = P_ORDER_LINE_ID;
+
+        P_ROWS_UPDATED := SQL%ROWCOUNT;
+    END UPDATE_ORDER_LINE;
+
+END PKG_UFM_DSD_ORDER;
+/

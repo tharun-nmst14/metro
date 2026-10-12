@@ -1,0 +1,110 @@
+CREATE OR REPLACE PACKAGE PKG_UFM_STOCK_ASSIGNMENT AS
+
+    PROCEDURE GET_STOCK_ASSIGNMENTS(
+        P_ASSIGNMENT_DAY IN STOCK_ASSIGNMENT.ASSIGNMENT_DAY%TYPE,
+        P_STORE_NO IN STORE.STORE_NO%TYPE,
+        P_ARTICLE_NO IN ARTICLE.ARTICLE_NO%TYPE,
+        P_DC_NO IN DISTRIBUTION_CENTER.DC_NO%TYPE,
+        P_RESULT OUT SYS_REFCURSOR
+    );
+
+    PROCEDURE GET_STOCK_ASSIGNMENT_BY_ID(
+        P_STOCK_ASSIGNMENT_ID
+            IN STOCK_ASSIGNMENT.STOCK_ASSIGNMENT_ID%TYPE,
+        P_RESULT OUT SYS_REFCURSOR
+    );
+
+END PKG_UFM_STOCK_ASSIGNMENT;
+/
+
+CREATE OR REPLACE PACKAGE BODY PKG_UFM_STOCK_ASSIGNMENT AS
+
+    PROCEDURE GET_STOCK_ASSIGNMENTS(
+        P_ASSIGNMENT_DAY IN STOCK_ASSIGNMENT.ASSIGNMENT_DAY%TYPE,
+        P_STORE_NO IN STORE.STORE_NO%TYPE,
+        P_ARTICLE_NO IN ARTICLE.ARTICLE_NO%TYPE,
+        P_DC_NO IN DISTRIBUTION_CENTER.DC_NO%TYPE,
+        P_RESULT OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN P_RESULT FOR
+            SELECT
+                SA.STOCK_ASSIGNMENT_ID,
+                SA.ASSIGNMENT_DAY,
+                SA.ARTICLE_ID,
+                A.ARTICLE_NO,
+                A.DESCRIPTION,
+                SA.STORE_ID,
+                ST.STORE_NO,
+                ST.STORE_NAME,
+                SA.DISTRIBUTION_CENTER_ID,
+                DC.DC_NO,
+                DC.DC_NAME,
+                SA.SALES_FORECAST,
+                SA.STORE_QUANTITY,
+                SA.ASSIGNED_STOCK_QUANTITY,
+                SA.QUANTITY_GAP,
+                SA.REMAINING_QUANTITY,
+                SA.UFM_STOCK,
+                SA.PROMOTION,
+                SA.RECALC,
+                SA.KEY_DISTRIBUTION,
+                SA.IBC,
+                SA.ARTICLE_EXCHANGE
+            FROM STOCK_ASSIGNMENT SA
+            LEFT JOIN ARTICLE A
+                ON A.ARTICLE_ID = SA.ARTICLE_ID
+            LEFT JOIN STORE ST
+                ON ST.STORE_ID = SA.STORE_ID
+            LEFT JOIN DISTRIBUTION_CENTER DC
+                ON DC.DISTRIBUTION_CENTER_ID =
+                   SA.DISTRIBUTION_CENTER_ID
+            WHERE
+                (P_ASSIGNMENT_DAY IS NULL
+                    OR SA.ASSIGNMENT_DAY >= TRUNC(P_ASSIGNMENT_DAY)
+                       AND SA.ASSIGNMENT_DAY <
+                           TRUNC(P_ASSIGNMENT_DAY) + 1)
+                AND
+                (P_STORE_NO IS NULL
+                    OR ST.STORE_NO = P_STORE_NO)
+                AND
+                (P_ARTICLE_NO IS NULL
+                    OR A.ARTICLE_NO = P_ARTICLE_NO)
+                AND
+                (P_DC_NO IS NULL
+                    OR DC.DC_NO = P_DC_NO)
+            ORDER BY SA.ASSIGNMENT_DAY, SA.STOCK_ASSIGNMENT_ID;
+    END GET_STOCK_ASSIGNMENTS;
+
+
+    PROCEDURE GET_STOCK_ASSIGNMENT_BY_ID(
+        P_STOCK_ASSIGNMENT_ID
+            IN STOCK_ASSIGNMENT.STOCK_ASSIGNMENT_ID%TYPE,
+        P_RESULT OUT SYS_REFCURSOR
+    )
+    AS
+    BEGIN
+        OPEN P_RESULT FOR
+            SELECT
+                SA.*,
+                A.ARTICLE_NO,
+                A.DESCRIPTION,
+                ST.STORE_NO,
+                ST.STORE_NAME,
+                DC.DC_NO,
+                DC.DC_NAME
+            FROM STOCK_ASSIGNMENT SA
+            LEFT JOIN ARTICLE A
+                ON A.ARTICLE_ID = SA.ARTICLE_ID
+            LEFT JOIN STORE ST
+                ON ST.STORE_ID = SA.STORE_ID
+            LEFT JOIN DISTRIBUTION_CENTER DC
+                ON DC.DISTRIBUTION_CENTER_ID =
+                   SA.DISTRIBUTION_CENTER_ID
+            WHERE SA.STOCK_ASSIGNMENT_ID =
+                  P_STOCK_ASSIGNMENT_ID;
+    END GET_STOCK_ASSIGNMENT_BY_ID;
+
+END PKG_UFM_STOCK_ASSIGNMENT;
+/
