@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Quantities</title>
+</head>
+
+<body>
+
+    <!-- Application shell -->
+    <header wicket:id="headerPanel"></header>
+
+    <nav wicket:id="navigationPanel"></nav>
+
+    <section wicket:id="userInfoPanel"></section>
+
+
+    <!-- Toolbar -->
+    <section class="sq-toolbar">
+
+    <div class="sq-toolbar-item">
+        
+        <a href="#" wicket:id="puarFilter"><strong>PUAR</strong></a>
+            <span wicket:id="puarValue"></span>
+        
+    </div>
+
+    <div class="sq-toolbar-item">
+        
+        <a href="#" wicket:id="sidFilter"><strong>SID</strong></a>
+            <span wicket:id="sidValue"></span>
+         
+    </div>
+
+    <div class="sq-toolbar-item">
+        
+        <a href="#" wicket:id="orderDayFilter"><strong>Order Day</strong></a>
+            <span wicket:id="orderDayValue"></span>
+         
+    </div>
+
+    <div class="sq-toolbar-item">
+        <a href="#" wicket:id="cutoffTimeFilter">
+        <strong>Cutoff Time</strong> </a>
+            <span wicket:id="cutoffTimeValue"></span>
+         
+    </div>
+
+</section>
+
+
+    <!-- Results -->
+     <section wicket:id="resultsSection" class="sq-results">
+
+     
+
+    <!-- Empty-state image -->
+    <div wicket:id="emptyStateContainer" class="sq-empty-state">
+
+        <img wicket:id="emptyStateImage"
+             alt="No store quantity data available"
+             class="sq-empty-state-image">
+
+    </div>
+
+    <!-- Results table -->
+    <div wicket:id="resultsContainer" class="sq-table-container">
+
+        <table class="sq-table">
+
+            <thead>
+                <tr>
+                    <th>Article No</th>
+                    <th>Description</th>
+                    <th>Subsystem No</th>
+                    <th>Merchandise Group</th>
+                    <th>Stock Quantity</th>
+                    <th>Sales Quantity</th>
+                    <th>Order Quantity</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr wicket:id="quantityRows">
+
+                    <td wicket:id="articleNo"></td>
+
+                    <td wicket:id="description"></td>
+
+                    <td wicket:id="subsystemNo"></td>
+
+                    <td wicket:id="merchandiseGroup"></td>
+
+                    <td wicket:id="stockQuantity"></td>
+
+                    <td wicket:id="salesQuantity"></td>
+
+                   <td>
+                    <input type="number" wicket:id="orderQuantity" class="sq-order-quantity-input" min="0" />
+                   </td>
+
+                </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+    <!-- Filter modal -->
+    <div wicket:id="filterModal" class="sq-modal-overlay">
+
+        <div class="sq-modal">
+
+            <div class="sq-modal-header">
+
+                <strong>Filter Criteria</strong>
+
+                <a href="#"
+                   wicket:id="closeFilter"
+                   class="sq-close-button"
+                   aria-label="Close">&times;</a>
+
+            </div>
+
+
+            <form wicket:id="filterForm">
+
+                <div class="sq-filter-grid">
+
+                    <div class="sq-filter-field">
+
+                        <label for="puarInput">PUAR</label>
+
+                        <input type="text"
+                               wicket:id="puarInput"
+                               id="puarInput">
+
+                    </div>
+
+
+                    <div class="sq-filter-field">
+
+                        <label for="sidInput">SID</label>
+
+                        <input type="text"
+                               wicket:id="sidInput"
+                               id="sidInput">
+
+                    </div>
+
+
+                    <div class="sq-filter-field">
+
+                        <label for="orderDayInput">Order Day</label>
+
+                        <input type="text"
+                               wicket:id="orderDayInput"
+                               id="orderDayInput">
+
+                    </div>
+
+
+                    <div class="sq-filter-field">
+
+                        <label for="cutoffTimeInput">Cutoff Time</label>
+
+                        <input type="text"
+                               wicket:id="cutoffTimeInput"
+                               id="cutoffTimeInput">
+
+                    </div>
+
+                </div>
+
+
+                <div class="sq-modal-actions">
+
+                    <button type="submit"
+                            wicket:id="applyFiltersButton" class="sq-apply-button">
+                        ✓  </button>
+
+                    <button type="submit"
+                            wicket:id="cancelFiltersButton" class="sq-cancel-button"
+                            formnovalidate>
+                      ✕
+                            </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

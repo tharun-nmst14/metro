@@ -1,0 +1,387 @@
+.sq-toolbar{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    
+    padding: 7px 10px;
+    min-height: 36px;
+
+    background: #e8c441;
+    border: 1px solid #c5a52f;
+    box-sizing: border-box;
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.sq-toolbar-item{
+    display: inline-flex;
+    align-items: stretch;
+    min-height: 28px;
+    
+    background: #ffffff;
+    border: 1px solid #9a9a9a;
+    box-sizing: border-box;
+}
+
+.sq-toolbar-item strong{
+    display: flex;
+    align-items: center;
+
+    padding: 5px 9px;
+
+    color: #ffffff;
+    background: #254b87;
+
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.sq-toolbar-item span {
+    display: flex;
+    align-items: center;
+
+    min-width: 55px;
+    padding: 5px 9px;
+
+    color: #222222;
+    background: #f5e9b5;
+
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/* .sq-results {
+    width: 100%;
+    min-height: 350px;
+    margin-top: 8px;
+
+    background: #f4f6fa;
+    border: 1px solid #b5bdc9;
+
+    box-sizing: border-box;
+} */
+
+ 
+
+.sq-result-message {
+    margin: 0;
+    padding: 18px 12px;
+
+    color: #333333;
+    background: #ffffff;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+/* Empty results area */
+.sq-results:has(.sq-result-message) {
+    background: #ffffff;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+    .sq-toolbar {
+        align-items: flex-start;
+    }
+
+    .sq-toolbar-item {
+        max-width: 100%;
+    }
+
+    .sq-toolbar-item strong,
+    .sq-toolbar-item span {
+        padding: 5px 6px;
+        font-size: 11px;
+    }
+
+    .sq-results {
+        overflow-x: auto;
+    }
+}
+
+.sq-filter-trigger {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    color: #254b87;
+    background: #f5e9b5;
+    text-decoration: none;
+    border-left: 1px solid #c5a52f;
+}
+
+.sq-filter-trigger:hover {
+    color: #ffffff;
+    background: #254b87;
+}
+
+
+/* ==========================================
+   STORE QUANTITIES - FILTER POPUP
+   Metro UFM Theme
+   ========================================== */
+
+/* Modal overlay */
+.sq-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+    background: rgba(20, 30, 45, 0.55);
+
+    box-sizing: border-box;
+}
+
+/* Popup container */
+.sq-modal {
+    width: 100%;
+    max-width: 650px;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    background: #ffffff;
+    border: 1px solid #254b87;
+    border-radius: 3px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+/* Popup header */
+.sq-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 16px;
+
+ 
+    border-bottom: 3px solid #e5bd36;
+}
+
+.sq-modal-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Close button */
+.sq-close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+
+    
+    font-size: 25px;
+    line-height: 1;
+    text-decoration: none;
+
+    border-radius: 3px;
+}
+
+.sq-close-button:hover {
+    color: #31302e;
+    background: #d4b960;
+}
+
+/* Form area */
+.sq-modal form {
+    margin: 0;
+    padding: 0;
+}
+
+/* Filter fields grid */
+.sq-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 20px;
+
+    padding: 22px 20px;
+}
+
+/* Individual field */
+.sq-filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+/* Field labels */
+.sq-filter-field label {
+    color: #01050c;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Text inputs */
+.sq-filter-field input {
+    width: 80%;
+    min-height: 32px;
+    padding: 6px 9px;
+
+    box-sizing: border-box;
+
+    color: #222222;
+    background: #ffffff;
+
+    border: 1px solid #d1a821;
+    border-radius: 2px;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+
+    transition: border-color 0.15s ease;
+}
+
+/* Focus state */
+.sq-filter-field input:focus {
+    outline: none;
+    border-color: #254b87;
+    box-shadow: 0 0 0 2px rgba(37, 75, 135, 0.12);
+}
+
+/* Bottom action bar */
+.sq-modal-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 20px;
+
+    background: #f2f2f3;
+    border-top: 1px solid #d6d8db;
+}
+
+/* Popup buttons */
+ 
+/* Button hover */
+ 
+
+.sq-modal-actions .sq-apply-button {
+    color: #31f33b;
+    background: #f9f9fa;
+    border-radius: 50%;
+    font-size: 16px;
+    
+}
+
+.sq-modal-actions .sq-cancel-button {
+    color: #eb0e0e;
+    background: #faf8f8;
+    border-radius: 50%;
+    font-size: 16px;
+}
+/* Keyboard focus */
+ 
+
+/* Responsive layout */
+@media (max-width: 600px) {
+    .sq-modal-overlay {
+        padding: 10px;
+    }
+
+    .sq-modal {
+        max-height: 95vh;
+    }
+
+    .sq-filter-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 16px;
+    }
+
+    .sq-modal-actions {
+        padding: 12px 16px;
+    }
+}
+
+/* Results table container */
+
+.sq-table-container {
+    width: 100%;
+    overflow-x: auto;
+    background: #ffffff;
+}
+
+
+/* Results table */
+
+.sq-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+
+/* Table headers */
+
+.sq-table th {
+    padding: 7px 9px;
+
+    text-align: left;
+    white-space: nowrap;
+
+    color: #ffffff;
+    background: #254b87;
+
+    border: 1px solid #183866;
+}
+
+
+/* Table cells */
+
+.sq-table td {
+    padding: 7px 9px;
+
+    color: #222222;
+    border: 1px solid #c5ccd6;
+
+    white-space: nowrap;
+}
+
+
+/* Alternating rows */
+
+.sq-table tbody tr:nth-child(even) {
+    background: #edf1f7;
+}
+
+.sq-table tbody tr:nth-child(odd) {
+    background: #ffffff;
+}
+
+
+/* Hover effect */
+
+.sq-table tbody tr:hover {
+    background: #f5e9b5;
+}
+
+
+/* Empty-state container */
+
+ 
+
+
+/* Empty-state image */
+
+.sq-empty-state-image {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+}

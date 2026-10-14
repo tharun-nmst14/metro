@@ -1,6 +1,6 @@
 package com.metro.ufm
 
-import com.metro.ufm.pages.{ApplicationShellPage, DsdOrderPage, LoginPage, LogoutPage, SteeringParameterPage, StockAssignmentPage}
+import com.metro.ufm.pages.{ApplicationShellPage, StoreQuantitiesPage, DsdOrderPage, LoginPage, LogoutPage, SteeringParameterPage, StockAssignmentPage}
 import org.apache.wicket.{Page, Session}
 import org.apache.wicket.protocol.http.WebApplication
 import org.apache.wicket.request.{Request, Response}
@@ -20,6 +20,7 @@ class MetroUfmApplication extends WebApplication {
     mountPage("/ordering/dsd-order", classOf[DsdOrderPage])
     mountPage("/ordering/stock-assignment", classOf[StockAssignmentPage])
     mountPage("/maintenance/steering-parameter", classOf[SteeringParameterPage])
+    mountPage("/ordering/store-quantities", classOf[StoreQuantitiesPage])
     mountPage("/logout", classOf[LogoutPage])
   }
 }
