@@ -50,7 +50,6 @@
 
 </section>
 
-
     <!-- Results -->
      <section wicket:id="resultsSection" class="sq-results">
 
@@ -65,7 +64,22 @@
 
     </div>
 
+    <div wicket:id="actionMessage" class="sq-action-message" role="status" aria-live="polite"></div>
+
     <!-- Results table -->
+
+    <form wicket:id="resultsForm">
+
+    <aside wicket:id="actionSidebar" class="sq-action-sidebar">
+        <button type="submit" wicket:id="saveAction" class="sq-icon-button" title="Save" aria-label="Save" formnovalidate>
+            <span aria-hidden="true">💾</span>
+        </button>
+
+        <button type="submit" wicket:id="releaseAction" class="sq-icon-button sq-release-icon" title="Release" aria-label="Release" formnovalidate>
+            <span aria-hidden="true">🚀</span>
+        </button>
+    </aside>
+
     <div wicket:id="resultsContainer" class="sq-table-container">
 
         <table class="sq-table">
@@ -98,7 +112,7 @@
                     <td wicket:id="salesQuantity"></td>
 
                    <td>
-                    <input type="number" wicket:id="orderQuantity" class="sq-order-quantity-input" min="0" />
+                    <input type="number" wicket:id="orderQuantity" class="sq-order-quantity-input" min="0" step="1" />
                    </td>
 
                 </tr>
@@ -107,6 +121,7 @@
         </table>
 
     </div>
+    </form>
 
 </section>
 

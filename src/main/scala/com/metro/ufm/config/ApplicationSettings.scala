@@ -8,10 +8,10 @@ final case class ApplicationSettings(
 ) extends Serializable
 
 object ApplicationSettings {
-  private val DefaultPort = 8080
+  private val DefaultPort = 8081
   private val DefaultLoginUsername = Some("admin")
   private val DefaultLoginPassword = Some("admin123")
-  private val DefaultApplicationVersion = "0.1.0-SNAPSHOT"
+  private val DefaultApplicationVersion = "0.1.0-SNAPSHOT"  
 
   def load(): ApplicationSettings = {
     val configuredPort = sys.props.get("ufm.port").orElse(sys.env.get("UFM_PORT"))

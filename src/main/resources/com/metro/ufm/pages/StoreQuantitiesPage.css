@@ -314,6 +314,7 @@
     width: 100%;
     overflow-x: auto;
     background: #ffffff;
+    padding-left: 2%;
 }
 
 
@@ -384,4 +385,156 @@
     width: 150px;
     height: 150px;
     object-fit: contain;
+}
+
+/* =========================================
+   Editable Order Quantity
+   ========================================= */
+
+.sq-order-quantity-input {
+    width: 78px;
+    box-sizing: border-box;
+    padding: 5px 7px;
+
+    border: 1px solid #9baec4;
+    border-radius: 2px;
+
+    background: #ffffff;
+    color: #172b45;
+
+    font: inherit;
+    text-align: right;
+}
+
+.sq-order-quantity-input:disabled {
+    background: #edf0f4;
+    color: #172b45;
+    opacity: 1;
+}
+
+.sq-order-quantity-input:focus {
+    outline: 2px solid #28578d;
+    outline-offset: 1px;
+}
+
+/* =========================================
+   Left Save / Release Sidebar
+   ========================================= */
+
+.sq-action-sidebar {
+    position: fixed;
+    left: 0;
+    top: 190px;
+    z-index: 100;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+
+    width: 54px;
+    padding: 5px 2px;
+
+    box-sizing: border-box;
+
+    background: #f4e5a6;
+    border: 1px solid #c3a72f;
+    border-left: none;
+    border-radius: 0 5px 5px 0;
+}
+
+/* Icon-only buttons */
+
+.sq-icon-button {
+    width: 22px;
+    height: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    font-size: 12px;
+
+    color: #ffffff;
+    background: #174875;
+
+    border: 1px solid #244d7d;
+    border-radius: 4px;
+
+    cursor: pointer;
+}
+
+.sq-icon-button:hover {
+    background: #285e91;
+}
+
+.sq-icon-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.sq-icon-button:disabled:hover {
+    background: #174875;
+}
+
+.sq-icon-button:focus-visible {
+    outline: 2px solid #111111;
+    outline-offset: 2px;
+}
+
+/* Release icon */
+
+.sq-release-icon {
+    background: #245f42;
+    border-color: #17442e;
+}
+
+.sq-release-icon:hover {
+    background: #327953;
+}
+
+/* Status message */
+
+.sq-action-message {
+    display: block;
+    margin: 8px 0;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    border: 1px solid #c5ccd6;
+    background: #f4f6fa;
+    color: #172b45;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.sq-action-message:empty {
+    display: none;
+}
+
+/* =========================================
+   Responsive Layout
+   ========================================= */
+
+@media (max-width: 700px) {
+
+    .sq-action-sidebar {
+        position: static;
+
+        width: 100%;
+
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+
+        border: 1px solid #c3a72f;
+        border-radius: 3px;
+
+        margin: 12px 0;
+    }
+
+    .sq-action-message {
+        flex-basis: 100%;
+    }
 }

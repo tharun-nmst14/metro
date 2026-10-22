@@ -8,7 +8,7 @@ case class StoreQuantity(
     stockQuantity: Int,
     salesQuantity: Int,
     orderQuantity: Int
-)
+) extends Serializable
 
 case class StoreQuantityFilter(
     puar: String,

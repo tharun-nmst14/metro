@@ -8,7 +8,8 @@ import com.metro.ufm.services.StoreQuantitiesService
 import org.apache.wicket.ajax.AjaxRequestTarget
 import org.apache.wicket.ajax.markup.html.AjaxLink
 import org.apache.wicket.ajax.markup.html.form.AjaxButton
-import org.apache.wicket.markup.head.{CssHeaderItem, IHeaderResponse}
+import org.apache.wicket.AttributeModifier
+import org.apache.wicket.markup.head.{CssHeaderItem, IHeaderResponse, JavaScriptHeaderItem}
 import org.apache.wicket.markup.html.WebPage
 import org.apache.wicket.markup.html.WebMarkupContainer
 import org.apache.wicket.markup.html.basic.Label
@@ -20,7 +21,7 @@ import org.apache.wicket.model.{LoadableDetachableModel, Model}
 import org.apache.wicket.request.resource.PackageResourceReference
 
 import scala.jdk.CollectionConverters._
-import org.apache.wicket.markup.html.form.NumberTextField
+import org.apache.wicket.model.IModel
 
 class StoreQuantitiesPage extends WebPage {
 
@@ -44,6 +45,20 @@ class StoreQuantitiesPage extends WebPage {
   private val sidDraft = Model.of("")
   private val orderDayDraft = Model.of("")
   private val cutoffTimeDraft = Model.of("")
+
+  // Search and Edit State
+
+  private var searchResults: List[StoreQuantity] = List.empty
+
+  private var savedQuantities: Map[String, Int] = Map.empty
+  private var draftOrderQuantities: Map[String, String] = Map.empty
+  private var hasSavedChanges = false
+  private var released = false
+
+  private val actionMessageModel = Model.of("")
+  private val saveDisabledModel = Model.of[java.lang.Boolean](java.lang.Boolean.TRUE)
+  private val releaseAvailableModel = Model.of[java.lang.Boolean](java.lang.Boolean.FALSE)
+
 
   // --------------------------------------------------
   // Application shell
@@ -99,7 +114,7 @@ class StoreQuantitiesPage extends WebPage {
 
   // Initially, no results have been loaded.
 
-  private var searchResults: List[StoreQuantity] = List.empty
+  // private var searchResults: List[StoreQuantity] = List.empty
 
   // --------------------------------------------------
   // Empty-state container
@@ -126,6 +141,63 @@ class StoreQuantitiesPage extends WebPage {
 
   resultsSection.add(emptyStateContainer)
 
+  private val actionMessage = new Label("actionMessage", actionMessageModel)
+  actionMessage.setOutputMarkupId(true)
+  resultsSection.add(actionMessage)
+
+// Results form
+
+private val resultsForm =
+  new Form[Void]("resultsForm")
+
+resultsForm.setOutputMarkupId(true)
+
+resultsSection.add(resultsForm)
+
+  // Sidebar actions share the results form with the editable table.
+  private val actionSidebar = new WebMarkupContainer("actionSidebar")
+  actionSidebar.setOutputMarkupId(true)
+  actionSidebar.setOutputMarkupPlaceholderTag(true)
+  actionSidebar.setVisible(false)
+
+  private val saveAction = new AjaxButton("saveAction", resultsForm) {
+    override def onSubmit(target: AjaxRequestTarget): Unit =
+      saveDraftQuantities(target)
+
+    override def onError(target: AjaxRequestTarget): Unit = {
+      showActionMessage("Unable to save. Check that every quantity is a non-negative whole number.")
+      refreshActionAvailability()
+      target.add(actionMessage, actionSidebar)
+    }
+  }
+  saveAction.add(AttributeModifier.replace(
+    "disabled",
+    saveDisabledModel.map(disabled => if (disabled) "disabled" else null)
+  ))
+  actionSidebar.add(saveAction)
+
+  private val releaseAction = new AjaxButton("releaseAction", resultsForm) {
+    override def onSubmit(target: AjaxRequestTarget): Unit =
+      releaseSavedQuantities(target)
+
+    override def onError(target: AjaxRequestTarget): Unit = {
+      showActionMessage("Unable to release. Check the quantity values and save changes first.")
+      refreshActionAvailability()
+      target.add(actionMessage, actionSidebar)
+    }
+  }
+  releaseAction.add(AttributeModifier.replace(
+    "disabled",
+    releaseAvailableModel.map(enabled => if (enabled) null else "disabled")
+  ))
+  releaseAction.add(AttributeModifier.replace(
+    "data-release-available",
+    releaseAvailableModel.map(enabled => if (enabled) "true" else "false")
+  ))
+  actionSidebar.add(releaseAction)
+
+  resultsForm.add(actionSidebar)
+
   // --------------------------------------------------
   // Results table container
   // --------------------------------------------------
@@ -135,12 +207,13 @@ class StoreQuantitiesPage extends WebPage {
 
   resultsContainer.setOutputMarkupId(true)
   resultsContainer.setOutputMarkupPlaceholderTag(true)
+  resultsForm.add(resultsContainer)
 
   // Hide the table on the initial page load.
   resultsContainer.setVisible(false)
 
   // --------------------------------------------------
-  // Table rows
+  // Editable Table rows
   // --------------------------------------------------
 
   private val quantityRows =
@@ -180,20 +253,115 @@ class StoreQuantitiesPage extends WebPage {
           )
         )
 
-       val orderQuantityinput= new NumberTextField[Integer]("orderQuantity", Model.of(Integer.valueOf(quantity.orderQuantity)),
-          classOf[Integer])
-          orderQuantityinput.setOutputMarkupId(true)
-        item.add(orderQuantityinput)
+        val orderQuantityModel = new IModel[String] {
+          override def getObject: String =
+            draftOrderQuantities.getOrElse(quantity.articleNo, quantity.orderQuantity.toString)
+
+          override def setObject(value: String): Unit = {
+            draftOrderQuantities = draftOrderQuantities.updated(
+              quantity.articleNo,
+              Option(value).getOrElse("")
+            )
+          }
+        }
+
+        val orderQuantityInput = new TextField[String]("orderQuantity", orderQuantityModel) {
+          override protected def getInputTypes(): Array[String] = Array("number")
+        }
+        orderQuantityInput.add(AttributeModifier.replace(
+          "data-saved-quantity",
+          savedQuantities.getOrElse(quantity.articleNo, quantity.orderQuantity).toString
+        ))
+
+        item.add(orderQuantityInput)
         
       }
     }
 
+  quantityRows.setReuseItems(true)
   resultsContainer.add(quantityRows)
 
-  resultsSection.add(resultsContainer)
+  private def hasUnsavedChanges: Boolean =
+    searchResults.exists { row =>
+      val current = draftOrderQuantities.getOrElse(row.articleNo, row.orderQuantity.toString).trim
+      val saved = savedQuantities.getOrElse(row.articleNo, row.orderQuantity)
+      current.toIntOption match {
+        case Some(value) => value != saved
+        case None => current != saved.toString
+      }
+    }
+
+  private def parsedDraftQuantities: Option[Map[String, Int]] = {
+    val parsed = searchResults.map { row =>
+      row.articleNo -> draftOrderQuantities
+        .getOrElse(row.articleNo, row.orderQuantity.toString)
+        .trim
+        .toIntOption
+    }
+
+    if (parsed.forall { case (_, value) => value.exists(_ >= 0) }) {
+      Some(parsed.map { case (articleNo, value) => articleNo -> value.get }.toMap)
+    } else {
+      None
+    }
+  }
+
+  private def refreshActionAvailability(): Unit = {
+    val hasResults = searchResults.nonEmpty
+    val hasChanges = hasUnsavedChanges
+    actionSidebar.setVisible(hasResults)
+    saveDisabledModel.setObject(!hasResults || !hasChanges)
+    releaseAvailableModel.setObject(hasResults && hasSavedChanges && !hasChanges && !released)
+  }
+
+  private def showActionMessage(message: String): Unit = {
+    actionMessageModel.setObject(message)
+  }
+
+  private def saveDraftQuantities(target: AjaxRequestTarget): Unit = {
+    if (!hasUnsavedChanges) {
+      showActionMessage("There are no changed quantities to save.")
+    } else {
+      parsedDraftQuantities match {
+        case None =>
+          showActionMessage("Order Quantity must be a non-negative whole number for every article.")
+        case Some(quantities) =>
+          searchResults = searchResults.map { row =>
+            row.copy(orderQuantity = quantities(row.articleNo))
+          }
+          savedQuantities = quantities
+          draftOrderQuantities = quantities.map { case (articleNo, value) =>
+            articleNo -> value.toString
+          }
+          hasSavedChanges = true
+          released = false
+          quantityRows.removeAll()
+          showActionMessage("Changes saved in demo memory. No database persistence was performed.")
+      }
+    }
+
+    refreshActionAvailability()
+    target.add(actionMessage, actionSidebar, resultsContainer)
+  }
+
+  private def releaseSavedQuantities(target: AjaxRequestTarget): Unit = {
+    if (searchResults.isEmpty) {
+      showActionMessage("Load Store Quantities results before releasing.")
+    } else if (hasUnsavedChanges) {
+      showActionMessage("Save the changed quantities before releasing.")
+    } else if (!hasSavedChanges || released) {
+      showActionMessage("Save changed quantities before releasing.")
+    } else {
+      released = true
+      showActionMessage("Demo release completed. No backend release API is configured.")
+    }
+
+    refreshActionAvailability()
+    target.add(actionMessage, actionSidebar)
+  }
 
   // --------------------------------------------------
-  // Filter popup container
+  // Filter modal
   // --------------------------------------------------
 
   private val filterModal =
@@ -315,6 +483,18 @@ class StoreQuantitiesPage extends WebPage {
         emptyStateContainer.setVisible(!hasResults)
         resultsContainer.setVisible(hasResults)
 
+        savedQuantities = searchResults.map { row =>
+          row.articleNo -> row.orderQuantity
+        }.toMap
+        draftOrderQuantities = searchResults.map { row =>
+          row.articleNo -> row.orderQuantity.toString
+        }.toMap
+        hasSavedChanges = false
+        released = false
+        quantityRows.removeAll()
+        showActionMessage("")
+        refreshActionAvailability()
+
         // Close the filter popup.
         filterModal.setVisible(false)
 
@@ -329,6 +509,7 @@ class StoreQuantitiesPage extends WebPage {
         // Refresh the empty state and results table.
         target.add(emptyStateContainer)
         target.add(resultsContainer)
+        target.add(actionSidebar, actionMessage)
       }
     }
   )
@@ -372,6 +553,15 @@ class StoreQuantitiesPage extends WebPage {
         new PackageResourceReference(
           classOf[StoreQuantitiesPage],
           "StoreQuantitiesPage.css"
+        )
+      )
+    )
+
+    response.render(
+      JavaScriptHeaderItem.forReference(
+        new PackageResourceReference(
+          classOf[StoreQuantitiesPage],
+          "StoreQuantitiesPage.js"
         )
       )
     )
