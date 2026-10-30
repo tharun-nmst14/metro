@@ -106,19 +106,19 @@ body {
 }
 
 .main-navigation .active {
-  background: #1f4f9b;
+   
   color: #f3f000;
 }
 
 .ordering-item {
-  background: #1f4f9b;
+   
   color: #f3f000;
 }
 
 .menu-trigger {
   border: 0;
   background: transparent;
-  color: inherit;
+   
   font: inherit;
   font-weight: 700;
   cursor: pointer;

@@ -314,7 +314,7 @@
     width: 100%;
     overflow-x: auto;
     background: #ffffff;
-    padding-left: 2%;
+    padding-left: 30px;
 }
 
 
@@ -421,26 +421,26 @@
    Left Save / Release Sidebar
    ========================================= */
 
+ 
+
 .sq-action-sidebar {
     position: fixed;
     left: 0;
-    top: 190px;
+    top: 200px;
     z-index: 100;
-
+    height: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
-
-    width: 54px;
+    gap: 4px;
+    width: 34px;
     padding: 5px 2px;
-
     box-sizing: border-box;
-
-    background: #f4e5a6;
-    border: 1px solid #c3a72f;
+    background: #f1f0ec;
+    /* border: 1px solid #c3a72f; */
     border-left: none;
     border-radius: 0 5px 5px 0;
+
 }
 
 /* Icon-only buttons */

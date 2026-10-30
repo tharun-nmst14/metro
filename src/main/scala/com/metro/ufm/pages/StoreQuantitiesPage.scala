@@ -336,7 +336,7 @@ resultsSection.add(resultsForm)
           hasSavedChanges = true
           released = false
           quantityRows.removeAll()
-          showActionMessage("Changes saved in demo memory. No database persistence was performed.")
+          showActionMessage("Changes saved")
       }
     }
 
@@ -353,7 +353,7 @@ resultsSection.add(resultsForm)
       showActionMessage("Save changed quantities before releasing.")
     } else {
       released = true
-      showActionMessage("Demo release completed. No backend release API is configured.")
+      showActionMessage("Demo release completed.")
     }
 
     refreshActionAvailability()

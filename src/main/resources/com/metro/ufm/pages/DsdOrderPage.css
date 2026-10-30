@@ -105,7 +105,7 @@ body {
   font-weight: 700;
 }
 
-.main-navigation .active {
+/* .main-navigation .active {
   background: #1f4f9b;
   color: #f3f000;
 }
@@ -113,7 +113,7 @@ body {
 .ordering-item {
   background: #1f4f9b;
   color: #f3f000;
-}
+} */
 
 .menu-trigger {
   border: 0;
@@ -530,7 +530,7 @@ body {
 .grid-icon::before {
   position: absolute;
   inset: 5px;
-  color: #2862a1;
+  /* color: #2862a1; */
   font-size: 15px;
   font-weight: 700;
   line-height: 17px;
